@@ -1,7 +1,3 @@
 ﻿namespace GymManagement.Domain.Entities;
 
-public enum Roles
-{
-    Client,
-    Admin
-}
+public record Email(string Value);

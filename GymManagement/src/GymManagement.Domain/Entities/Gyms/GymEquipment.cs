@@ -1,9 +1,13 @@
 ﻿using GymManagement.Domain.Abstractions;
 
-namespace GymManagement.Domain.Entities;
+namespace GymManagement.Domain.Entities.Gyms;
 
-public sealed class GymEquipment(Guid id) : Entity(id)
+public sealed class GymEquipment : Entity
 {
+    private GymEquipment(Guid id) : base(id)
+    {
+    }
+
     public Name Name { get; private set; }
 
     public Description Description { get; private set; }

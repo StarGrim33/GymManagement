@@ -1,4 +1,4 @@
-﻿namespace GymManagement.Domain.Entities;
+﻿namespace GymManagement.Domain.Entities.Memberships;
 
 public enum MembershipType
 {

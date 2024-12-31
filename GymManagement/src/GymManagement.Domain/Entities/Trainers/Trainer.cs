@@ -1,10 +1,20 @@
 ﻿using GymManagement.Domain.Abstractions;
+using GymManagement.Domain.Entities.Gyms;
+using GymManagement.Domain.Entities.Users;
 
-namespace GymManagement.Domain.Entities;
+namespace GymManagement.Domain.Entities.Trainers;
 
-public sealed class Trainer(Guid id) : Entity(id)
+public sealed class Trainer : Entity
 {
-    public Name Name { get; private set; }
+    private Trainer(Guid id) : base(id)
+    {
+    }
+
+    public FirstName FirstName { get; private set; }
+
+    public LastName LastName { get; private set; }
+
+    public Email Email { get; private set; }
 
     public string PhoneNumber { get; private set; } = string.Empty;
 

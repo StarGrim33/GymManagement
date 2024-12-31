@@ -1,9 +1,15 @@
 ﻿using GymManagement.Domain.Abstractions;
+using GymManagement.Domain.Entities.Gyms;
+using GymManagement.Domain.Entities.Users;
 
-namespace GymManagement.Domain.Entities;
+namespace GymManagement.Domain.Entities.Trainers;
 
-public sealed class TrainingSession(Guid id) : Entity(id)
+public sealed class TrainingSession : Entity
 {
+    private TrainingSession(Guid id) : base(id)
+    {
+    }
+
     public DateTime StartTime { get; private set; }
 
     public DateTime EndTime { get; private set; }
