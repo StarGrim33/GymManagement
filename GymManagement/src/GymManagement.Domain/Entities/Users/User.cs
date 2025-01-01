@@ -82,8 +82,9 @@ public sealed class User : Entity
         Memberships.Add(membership);
     }
 
-    public bool HasActiveMembershipInGym(Gym gym)
+    public Membership? GetActiveMembershipInGym(Gym gym)
     {
-        return Memberships.Any(m => m.Gym == gym && m.IsActive && m.EndDate > DateTime.UtcNow);
+        return Memberships
+            .FirstOrDefault(m => m.Gym == gym && m.IsActive && m.EndDate > DateTime.UtcNow);
     }
 }
