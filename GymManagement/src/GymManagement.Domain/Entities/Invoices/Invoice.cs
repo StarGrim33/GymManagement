@@ -52,5 +52,7 @@ public sealed class Invoice : Entity
     {
         PaymentStatus = PaymentStatus.Paid;
         PaymentDate = paymentDate;
+
+        Membership.Activate();
     }
 }

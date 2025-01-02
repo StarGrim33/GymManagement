@@ -10,18 +10,20 @@ public sealed class Membership : Entity
 {
     private Membership(
         Guid id,
-        MembershipType membershipType, 
-        decimal priceAmount, 
-        bool isActive, 
-        User user, 
-        Gym gym, DateTime? startDate, DateTime? endDate) 
+        MembershipType membershipType,
+        decimal priceAmount,
+        bool isActive,
+        User user,
+        Gym gym,
+        DateTime? startDate,
+        DateTime? endDate)
         : base(id)
     {
         MembershipType = membershipType;
         PriceAmount = priceAmount;
         IsActive = isActive;
-        User = user;
-        Gym = gym;
+        User = user ?? throw new ArgumentNullException(nameof(user));
+        Gym = gym ?? throw new ArgumentNullException(nameof(gym));
         StartDate = startDate;
         EndDate = endDate;
     }
@@ -38,7 +40,7 @@ public sealed class Membership : Entity
 
     public User User { get; private set; }
 
-    private List<Invoice> Invoices { get; set; } = [];
+    public List<Invoice> Invoices { get; } = [];
 
     public Gym Gym { get; private set; }
 
@@ -65,13 +67,13 @@ public sealed class Membership : Entity
         else
         {
             var startDate = DateTime.UtcNow;
-            var endDate = startDate.AddMonths(1);
-            
+            var endDate = CalculateEndDate(startDate, membershipType);
+
             membership = new Membership(
                 userId,
                 membershipType,
                 priceAmount,
-                isActive: true,
+                false,
                 user,
                 gym,
                 startDate,
@@ -81,7 +83,7 @@ public sealed class Membership : Entity
             user.AddMembership(membership);
             gym.AddMembership(membership);
         }
-        
+
         var invoice = Invoice.Create(
             Guid.NewGuid(),
             DateTime.UtcNow,
@@ -98,6 +100,14 @@ public sealed class Membership : Entity
     public void Deactivate()
     {
         IsActive = false;
+
+        // Можно будет добавить соответствующее событие, например, MembershipDeactivatedDomainEvent.
+    }
+
+    public void Activate()
+    {
+        IsActive = true;
+        RaiseDomainEvent(new MembershipActivatedDomainEvent(Id));
     }
 
     private void Extend(MembershipType membershipType)
@@ -114,8 +124,6 @@ public sealed class Membership : Entity
             EndDate = CalculateEndDate(StartDate.Value, membershipType);
         }
 
-        IsActive = true;
-
         RaiseDomainEvent(new MembershipPurchasedDomainEvent(Id));
     }
 
@@ -127,7 +135,7 @@ public sealed class Membership : Entity
             MembershipType.Monthly => startDate.AddMonths(1),
             MembershipType.Quarterly => startDate.AddMonths(3),
             MembershipType.Annual => startDate.AddYears(1),
-            _ => throw new ArgumentOutOfRangeException(nameof(membershipType), "Invalid membership type"),
+            _ => throw new ArgumentOutOfRangeException(nameof(membershipType), "Invalid membership type")
         };
     }
 }
