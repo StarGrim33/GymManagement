@@ -2,5 +2,5 @@
 
 public interface IGymRepository
 {
-    Task<Gym> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
+    Task<Gym?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
 }

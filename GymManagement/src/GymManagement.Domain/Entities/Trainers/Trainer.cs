@@ -6,8 +6,11 @@ namespace GymManagement.Domain.Entities.Trainers;
 
 public sealed class Trainer : Entity
 {
-    private Trainer(Guid id) : base(id)
+    private Trainer(Guid id, FirstName firstName, LastName lastName, Email email) : base(id)
     {
+        FirstName = firstName;
+        LastName = lastName;
+        Email = email;
     }
 
     public FirstName FirstName { get; private set; }

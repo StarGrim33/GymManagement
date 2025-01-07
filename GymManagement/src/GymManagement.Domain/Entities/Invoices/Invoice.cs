@@ -11,7 +11,7 @@ public sealed class Invoice : Entity
         decimal amount, 
         PaymentStatus paymentStatus, 
         DateTime? paymentDate, 
-        Membership membership) 
+        Membership membership, Guid membershipId) 
         : base(id)
     {
         InvoiceDate = invoiceDate;
@@ -19,6 +19,7 @@ public sealed class Invoice : Entity
         PaymentStatus = paymentStatus;
         PaymentDate = paymentDate;
         Membership = membership;
+        MembershipId = membershipId;
     }
 
     public DateTime InvoiceDate { get; private set; }
@@ -30,6 +31,8 @@ public sealed class Invoice : Entity
     public DateTime? PaymentDate { get; private set; }
 
     public Membership Membership { get; private set; }
+
+    public Guid MembershipId { get; private set; }
 
     public static Invoice Create(
         Guid id,
@@ -45,7 +48,8 @@ public sealed class Invoice : Entity
             amount,
             paymentStatus,
             paymentDate,
-            membership);
+            membership,
+            membership.Id);
     }
 
     public void MarkAsPaid(DateTime paymentDate)
@@ -53,6 +57,6 @@ public sealed class Invoice : Entity
         PaymentStatus = PaymentStatus.Paid;
         PaymentDate = paymentDate;
 
-        Membership.Activate();
+        Membership.MarkAsPaid();
     }
 }

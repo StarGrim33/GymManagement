@@ -2,4 +2,4 @@
 
 namespace GymManagement.Domain.Entities.Memberships.Events;
 
-public record MembershipActivatedDomainEvent(Guid MembershipId) : IDomainEvent;
+public record MembershipFrozenDomainEvent(Guid MembershipId) : IDomainEvent;

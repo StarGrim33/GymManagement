@@ -11,12 +11,14 @@ public sealed class Gym : Entity
         Guid id, 
         Name name, 
         Description description, 
-        Address address) 
+        Address address, 
+        Schedule schedule) 
         : base(id)
     {
-        Name = name;
-        Description = description;
-        Address = address;
+        Name = name ?? throw new ArgumentNullException(nameof(name));
+        Description = description ?? throw new ArgumentNullException(nameof(description));
+        Address = address ?? throw new ArgumentNullException(nameof(address));
+        Schedule = schedule ?? throw new ArgumentNullException(nameof(schedule));
     }
 
     public Name Name { get; private set; }
@@ -25,7 +27,7 @@ public sealed class Gym : Entity
 
     public Address Address { get; private set; }
 
-    public string Schedule { get; private set; } = string.Empty;
+    public Schedule Schedule { get; private set; }
 
     public List<Amenity> Amenities { get; private set; } = [];
 
@@ -35,9 +37,57 @@ public sealed class Gym : Entity
 
     public List<Membership> Memberships { get; private set; } = [];
 
+    public static Gym Create(Name name, Description description, Address address, Schedule schedule)
+    {
+        var gym = new Gym(
+            Guid.NewGuid(),
+            name,
+            description,
+            address,
+            schedule);
+
+        // Можно добавить генерацию доменных событий, если необходимо
+        // gym.RaiseDomainEvent(new GymCreatedDomainEvent(gym.Id));
+
+        return gym;
+    }
+
+    public void AddAmenity(Amenity amenity)
+    {
+        Amenities.Add(amenity);
+    }
+
+    public void RemoveAmenity(Amenity amenity)
+    {
+        Amenities.Remove(amenity);
+    }
+
+    public void AddTrainer(Trainer trainer)
+    {
+        ArgumentNullException.ThrowIfNull(trainer);
+
+        Trainers.Add(trainer);
+    }
+
+    public void RemoveTrainer(Trainer trainer)
+    {
+        ArgumentNullException.ThrowIfNull(trainer);
+
+        var foundedTrainer = Trainers.Find(x => x.Id == trainer.Id);
+
+        if (foundedTrainer != null) Trainers.Remove(foundedTrainer);
+    }
+
+    public void AddEquipment(GymEquipment equipment)
+    {
+        ArgumentNullException.ThrowIfNull(equipment);
+
+        Equipment.Add(equipment);
+    }
+
     public void AddMembership(Membership membership)
     {
-        if (membership == null) throw new ArgumentNullException(nameof(membership));
+        ArgumentNullException.ThrowIfNull(membership);
 
         Memberships.Add(membership);
     }

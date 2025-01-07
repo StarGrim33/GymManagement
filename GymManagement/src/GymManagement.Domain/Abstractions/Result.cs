@@ -4,18 +4,19 @@ public class Result
 {
     protected internal Result(bool isSuccess, Error error)
     {
-        if (isSuccess && error != Error.None)
+        switch (isSuccess)
         {
-            throw new InvalidOperationException();
-        }
+            case true when error != Error.None:
+                throw new InvalidOperationException();
 
-        if (!isSuccess && error == Error.None)
-        {
-            throw new InvalidOperationException();
-        }
+            case false when error == Error.None:
+                throw new InvalidOperationException();
 
-        IsSuccess = isSuccess;
-        Error = error;
+            default:
+                IsSuccess = isSuccess;
+                Error = error;
+                break;
+        }
     }
 
     public Error Error { get; }
