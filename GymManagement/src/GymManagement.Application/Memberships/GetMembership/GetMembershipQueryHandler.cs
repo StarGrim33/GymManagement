@@ -14,10 +14,24 @@ internal sealed class GetMembershipQueryHandler : IQueryHandler<GetMembershipQue
         _sqlConnectionFactory = sqlConnectionFactory;
     }
 
-    public async Task<Result<MembershipResponse>> Handle(GetMembershipQuery request, CancellationToken cancellationToken)
+    public async Task<Result<MembershipResponse>> Handle(GetMembershipQuery request,
+        CancellationToken cancellationToken)
     {
+        const string sql = """
+                           SELECT
+                               id AS Id,
+                               user_id AS UserId,
+                               membership_id AS MembershipId,
+                               status AS Status,
+                               price_amount AS PriceAmount,
+                               start_date AS StartDate,
+                               end_date AS EndDate,
+                               membership_type AS MembershipType
+                           FROM memberships
+                           WHERE id = @MembershipId
+                           """;
+
         using var connection = _sqlConnectionFactory.CreateConnection();
-        const string sql = "string.Empty";
 
         var membership = await connection.QueryFirstOrDefaultAsync<MembershipResponse>(
             sql,
