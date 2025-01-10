@@ -2,4 +2,4 @@
 
 namespace GymManagement.Application.MembershipTypes.GetMembershipTypes;
 
-public sealed record GetMembershipTypesQuery() : IQuery<MembershipTypesResponse>;
+public sealed record GetMembershipTypesQuery : IQuery<IReadOnlyList<MembershipTypesResponse>>;

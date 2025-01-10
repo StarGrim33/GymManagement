@@ -1,4 +1,4 @@
-﻿using GymManagement.Domain.Entities.Memberships;
+﻿using GymManagement.Domain.Entities.Memberships.MembershipTypes;
 
 namespace GymManagement.Application.Memberships.GetMembership;
 

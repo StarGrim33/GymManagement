@@ -1,4 +1,4 @@
-﻿namespace GymManagement.Domain.Entities.Memberships;
+﻿namespace GymManagement.Domain.Entities.Memberships.MembershipTypes;
 
 public interface IMembershipTypeRepository
 {
