@@ -6,5 +6,9 @@ public static class GymErrors
 {
     public static Error NotFound =
         new("Gym.Found",
-            "Membership was not found");
+            "Gym was not found");    
+    
+    public static Error Exists =
+        new("Gym.Exists",
+            "Gym with the same name is already exists");
 }

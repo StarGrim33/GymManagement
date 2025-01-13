@@ -3,6 +3,7 @@ using GymManagement.Domain.Entities.Gyms;
 using GymManagement.Domain.Entities.Invoices;
 using GymManagement.Domain.Entities.Memberships.Errors;
 using GymManagement.Domain.Entities.Memberships.Events;
+using GymManagement.Domain.Entities.Memberships.MembershipTypes;
 using GymManagement.Domain.Entities.Users;
 
 namespace GymManagement.Domain.Entities.Memberships;

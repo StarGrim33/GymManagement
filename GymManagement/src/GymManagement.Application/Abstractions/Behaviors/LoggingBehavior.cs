@@ -24,17 +24,17 @@ public class LoggingBehavior<TRequest, TResponse>
 
         try
         {
-            _logger.LogInformation("Executing command {}", name);
+            _logger.LogInformation("Executing command {Command}", name);
 
             var result = await next();
 
-            _logger.LogInformation("Command {} processed successfully", name);
+            _logger.LogInformation("Command {Command} processed successfully", name);
 
             return result;
         }
         catch (Exception exception)
         {
-            _logger.LogError(exception, "Command {} processing failed", name);
+            _logger.LogError(exception, "Command {Command} processing failed", name);
 
             throw;
         }

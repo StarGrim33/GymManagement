@@ -2,21 +2,22 @@
 using GymManagement.Application.Abstractions.Data;
 using GymManagement.Application.Abstractions.Messaging;
 using GymManagement.Domain.Abstractions;
+using GymManagement.Domain.Entities.Memberships.MembershipTypes.Errors;
 
 namespace GymManagement.Application.MembershipTypes.SearchMembershipTypes;
 
-internal sealed class SearchMembershipTypesQueryHandler
-    : IQueryHandler<SearchMembershipTypesQuery, IReadOnlyList<MembershipTypesResponse>>
+internal sealed class SearchMembershipTypesByNameQueryHandler
+    : IQueryHandler<SearchMembershipTypesByNameQuery, MembershipTypesResponse>
 {
     private readonly ISqlConnectionFactory _sqlConnectionFactory;
 
-    public SearchMembershipTypesQueryHandler(ISqlConnectionFactory sqlConnectionFactory)
+    public SearchMembershipTypesByNameQueryHandler(ISqlConnectionFactory sqlConnectionFactory)
     {
         _sqlConnectionFactory = sqlConnectionFactory;
     }
 
-    public async Task<Result<IReadOnlyList<MembershipTypesResponse>>> Handle(
-        SearchMembershipTypesQuery request,
+    public async Task<Result<MembershipTypesResponse>> Handle(
+        SearchMembershipTypesByNameQuery request,
         CancellationToken cancellationToken)
     {
         const string sql = """
@@ -26,23 +27,24 @@ internal sealed class SearchMembershipTypesQueryHandler
                                a.duration as Duration,
                                a.price as Price
                            FROM membership_types AS a
+                           WHERE a.name = @Name
                            """;
 
         if (string.IsNullOrEmpty(request.Name))
         {
-            return new List<MembershipTypesResponse>();
+            Result.Failure<MembershipTypesResponse>(MembershipTypesErrors.EmptyName);
         }
 
         using var connection = _sqlConnectionFactory.CreateConnection();
 
-        var apartments = await connection
-            .QueryAsync<MembershipTypesResponse>(
+        var membershipType = await connection
+            .QueryFirstOrDefaultAsync<MembershipTypesResponse>(
                 sql,
                 new
-                {
+                { 
                     request.Name
                 });
 
-        return apartments.ToList();
+        return membershipType ?? Result.Failure<MembershipTypesResponse>(MembershipTypesErrors.NotFound);
     }
 }

@@ -1,19 +1,19 @@
 ﻿using GymManagement.Domain.Abstractions;
 
-namespace GymManagement.Domain.Entities.Memberships;
+namespace GymManagement.Domain.Entities.Memberships.MembershipTypes;
 
 public class MembershipType : Entity
 {
     private MembershipType(
-        Guid id, 
-        TimeSpan duration, 
-        decimal price) 
+        Guid id,
+        TimeSpan duration,
+        decimal price)
         : base(id)
     {
         Duration = duration;
         Price = price;
     }
-    
+
     public string Name { get; private set; }
 
     public TimeSpan Duration { get; private set; }

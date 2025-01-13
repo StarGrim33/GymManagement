@@ -4,6 +4,7 @@ using GymManagement.Domain.Entities.Gyms;
 using GymManagement.Domain.Entities.Gyms.Errors;
 using GymManagement.Domain.Entities.Memberships;
 using GymManagement.Domain.Entities.Memberships.Errors;
+using GymManagement.Domain.Entities.Memberships.MembershipTypes;
 using GymManagement.Domain.Entities.Users;
 using GymManagement.Domain.Entities.Users.Errors;
 
