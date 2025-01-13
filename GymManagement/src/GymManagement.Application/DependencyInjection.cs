@@ -1,4 +1,5 @@
-﻿using GymManagement.Application.Abstractions.Behaviors;
+﻿using FluentValidation;
+using GymManagement.Application.Abstractions.Behaviors;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace GymManagement.Application;
@@ -11,7 +12,10 @@ public static class DependencyInjection
         {
             configuration.RegisterServicesFromAssembly(typeof(DependencyInjection).Assembly);
             configuration.AddOpenBehavior(typeof(LoggingBehavior<,>));
+            configuration.AddBehavior(typeof(ValidationBehavior<,>));
         });
+
+        services.AddValidatorsFromAssembly(typeof(DependencyInjection).Assembly);
 
         return services;
     }
