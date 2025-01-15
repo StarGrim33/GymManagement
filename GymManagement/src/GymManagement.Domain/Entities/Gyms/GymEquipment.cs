@@ -4,7 +4,8 @@ namespace GymManagement.Domain.Entities.Gyms;
 
 public sealed class GymEquipment : Entity
 {
-    private GymEquipment(Guid id) : base(id)
+    private GymEquipment(Guid id) 
+        : base(id)
     {
     }
 
@@ -17,4 +18,6 @@ public sealed class GymEquipment : Entity
     public bool IsAvailable { get; private set; }
 
     public Gym Gym { get; private set; }
+
+    public Guid GymId { get; private set; }
 }

@@ -47,7 +47,7 @@ public sealed class User : Entity
 
     public bool IsActive { get; private set; }
 
-    public List<TrainingSession> TrainingSession { get; private set; } = [];
+    public List<TrainingSession> TrainingSessions { get; private set; } = [];
 
     public static User Create(
         FirstName firstName, 

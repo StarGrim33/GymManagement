@@ -6,7 +6,8 @@ namespace GymManagement.Domain.Entities.Trainers;
 
 public sealed class TrainingSession : Entity
 {
-    private TrainingSession(Guid id) : base(id)
+    private TrainingSession(Guid id) 
+        : base(id)
     {
     }
 
@@ -16,7 +17,11 @@ public sealed class TrainingSession : Entity
 
     public Trainer Trainer { get; private set; }
 
+    public Guid TrainerId { get; private set; }
+
     public Gym Gym { get; private set; }
+
+    public Guid GymId { get; private set; }
 
     public TrainingType TrainingType { get; private set; }
 
