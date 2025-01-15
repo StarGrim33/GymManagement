@@ -29,7 +29,7 @@ public sealed class Gym : Entity
 
     public Schedule Schedule { get; private set; }
 
-    public List<Amenity> Amenities { get; private set; } = [];
+    public List<GymAmenity> GymAmenities { get; private set; } = [];
 
     public List<Trainer> Trainers { get; private set; } = [];
 
@@ -37,7 +37,15 @@ public sealed class Gym : Entity
 
     public List<Membership> Memberships { get; private set; } = [];
 
-    public static Gym Create(Name name, Description description, Address address, Schedule schedule)
+    public List<TrainingSession> TrainingSessions { get; private set; } = [];
+
+    public IReadOnlyCollection<Amenity> Amenities => GymAmenities.Select(ga => ga.Amenity).ToList();
+
+    public static Gym Create(
+        Name name, 
+        Description description, 
+        Address address, 
+        Schedule schedule)
     {
         var gym = new Gym(
             Guid.NewGuid(),
@@ -52,14 +60,18 @@ public sealed class Gym : Entity
         return gym;
     }
 
-    public void AddAmenity(Amenity amenity)
+    public void AddAmenity(GymAmenity amenity)
     {
-        Amenities.Add(amenity);
+        ArgumentNullException.ThrowIfNull(amenity);
+
+        GymAmenities.Add(amenity);
     }
 
-    public void RemoveAmenity(Amenity amenity)
+    public void RemoveAmenity(GymAmenity amenity)
     {
-        Amenities.Remove(amenity);
+        ArgumentNullException.ThrowIfNull(amenity);
+
+        GymAmenities.Remove(amenity);
     }
 
     public void AddTrainer(Trainer trainer)

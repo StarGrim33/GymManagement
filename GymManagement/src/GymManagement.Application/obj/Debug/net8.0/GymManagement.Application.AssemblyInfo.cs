@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("GymManagement.Application")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9800fc0f2ea5aac90cde0215eab8bfd76edcdfa2")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9fe958879151e68170a6a4a6922afa581b97cf21")]
 [assembly: System.Reflection.AssemblyProductAttribute("GymManagement.Application")]
 [assembly: System.Reflection.AssemblyTitleAttribute("GymManagement.Application")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

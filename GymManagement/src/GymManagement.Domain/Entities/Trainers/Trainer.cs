@@ -27,7 +27,9 @@ public sealed class Trainer : Entity
 
     public bool IsActive { get; private set; }
 
-    public List<Gym> Gym { get; private set; } = [];
+    public Gym Gym { get; private set; }
+
+    public Guid GymId { get; private set; }
 
     public List<TrainingSession> TrainingSessions { get; private set; } = [];
 }
