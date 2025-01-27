@@ -22,6 +22,7 @@
 
   <ItemGroup>
     <Folder Include="Email\" />
+    <Folder Include="Migrations\" />
   </ItemGroup>
 
 </Project>

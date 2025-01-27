@@ -21,6 +21,10 @@ public sealed class Gym : Entity
         Schedule = schedule ?? throw new ArgumentNullException(nameof(schedule));
     }
 
+    private Gym()
+    {
+    }
+
     public Name Name { get; private set; }
 
     public Description Description { get; private set; }

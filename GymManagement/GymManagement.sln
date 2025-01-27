@@ -11,7 +11,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GymManagement.Domain", "src
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GymManagement.Application", "src\GymManagement.Application\GymManagement.Application.csproj", "{CC2D90C8-65EA-4B6B-B8E8-9972A4C41ABF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GymManagement.Infrastructure", "src\GymManagement.Infrastructure\GymManagement.Infrastructure.csproj", "{6BD4A378-416F-4F86-8A1A-3436133E25E4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GymManagement.Infrastructure", "src\GymManagement.Infrastructure\GymManagement.Infrastructure.csproj", "{6BD4A378-416F-4F86-8A1A-3436133E25E4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GymManagement.Api", "src\GymManagement.Api\GymManagement.Api.csproj", "{7FA1ED8E-4544-4E1D-B50F-6A837631B0A9}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{4F85DB7C-5673-4E02-843C-CB246F148988}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,6 +35,14 @@ Global
 		{6BD4A378-416F-4F86-8A1A-3436133E25E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6BD4A378-416F-4F86-8A1A-3436133E25E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6BD4A378-416F-4F86-8A1A-3436133E25E4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7FA1ED8E-4544-4E1D-B50F-6A837631B0A9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7FA1ED8E-4544-4E1D-B50F-6A837631B0A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7FA1ED8E-4544-4E1D-B50F-6A837631B0A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7FA1ED8E-4544-4E1D-B50F-6A837631B0A9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4F85DB7C-5673-4E02-843C-CB246F148988}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4F85DB7C-5673-4E02-843C-CB246F148988}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4F85DB7C-5673-4E02-843C-CB246F148988}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4F85DB7C-5673-4E02-843C-CB246F148988}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -39,6 +51,7 @@ Global
 		{F212BB66-56C1-44A0-991E-63373898443C} = {9F90F292-B4D1-4810-9475-2A1AD23AB771}
 		{CC2D90C8-65EA-4B6B-B8E8-9972A4C41ABF} = {9F90F292-B4D1-4810-9475-2A1AD23AB771}
 		{6BD4A378-416F-4F86-8A1A-3436133E25E4} = {9F90F292-B4D1-4810-9475-2A1AD23AB771}
+		{7FA1ED8E-4544-4E1D-B50F-6A837631B0A9} = {9F90F292-B4D1-4810-9475-2A1AD23AB771}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6D033E89-6197-441D-ADBB-ABC4D437C2C4}

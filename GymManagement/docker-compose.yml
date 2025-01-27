@@ -1,0 +1,21 @@
+services:
+  gymmanagement.api:
+    image: ${DOCKER_REGISTRY-}gymmanagementapi
+    container_name: Gym-Management-API
+    build:
+      context: .
+      dockerfile: src/GymManagement.Api/Dockerfile
+    depends_on:
+      - gym-management-db
+
+  gym-management-db:
+    image: postgres:latest
+    container_name: Gym-Management.Db
+    environment:
+      - POSTGRES_DB=bokify
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - ./.containers/database:/var/lib/postgresql/data
+    ports:
+      - 5432:5432

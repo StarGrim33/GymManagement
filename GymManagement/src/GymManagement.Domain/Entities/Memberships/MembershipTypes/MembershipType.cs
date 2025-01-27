@@ -17,6 +17,10 @@ public class MembershipType : Entity
         Price = price;
     }
 
+    private MembershipType()
+    {
+    }
+
 
     public string Name { get; private set; }
 

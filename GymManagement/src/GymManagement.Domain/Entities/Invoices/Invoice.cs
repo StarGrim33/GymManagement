@@ -22,6 +22,10 @@ public sealed class Invoice : Entity
         MembershipId = membershipId;
     }
 
+    private Invoice()
+    {
+    }
+
     public DateTime InvoiceDate { get; private set; }
 
     public decimal Amount { get; private set; }

@@ -1,5 +1,16 @@
-﻿using GymManagement.Application.Abstractions.Email;
+﻿using Dapper;
+using GymManagement.Application.Abstractions.Data;
+using GymManagement.Application.Abstractions.Email;
+using GymManagement.Domain.Abstractions;
+using GymManagement.Domain.Entities.Gyms;
+using GymManagement.Domain.Entities.Invoices;
+using GymManagement.Domain.Entities.Memberships;
+using GymManagement.Domain.Entities.Memberships.MembershipTypes;
+using GymManagement.Domain.Entities.Trainers;
+using GymManagement.Domain.Entities.Users;
+using GymManagement.Infrastructure.Data;
 using GymManagement.Infrastructure.Email;
+using GymManagement.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,6 +32,24 @@ public static class DependencyInjection
         {
             options.UseNpgsql(connectionString).UseSnakeCaseNamingConvention();
         });
+
+        services.AddScoped<IUserRepository, UserRepository>();
+
+        services.AddScoped<IMembershipRepository, MembershipRepository>();
+
+        services.AddScoped<IMembershipTypeRepository, MembershipTypeRepository>();
+
+        services.AddScoped<IInvoiceRepository, InvoiceRepository>();
+
+        services.AddScoped<IGymRepository, GymRepository>();
+
+        services.AddScoped<ITrainerRepository, TrainerRepository>();
+
+        services.AddScoped<IUnitOfWork, ApplicationDbContext>();
+
+        services.AddSingleton<ISqlConnectionFactory>(_ => new SqlConnectionFactory(connectionString));
+
+        SqlMapper.AddTypeHandler(new DateOnlyTypeHandler());
 
         return services;
     }

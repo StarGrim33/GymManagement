@@ -31,29 +31,29 @@ internal sealed class UserConfiguration : IEntityTypeConfiguration<User>
             .HasConversion<string>()
             .IsRequired();
 
-        builder.OwnsOne(u => u.FirstName, fn =>
-        {
-            fn.Property(f => f.Value)
-                .HasColumnName("first_name")
-                .HasMaxLength(50)
-                .IsRequired();
-        });
+        builder.Property(u => u.FirstName)
+            .HasConversion(
+                v => v.Value,
+                v => new FirstName(v))
+            .HasColumnName("first_name")
+            .HasMaxLength(50)
+            .IsRequired();
 
-        builder.OwnsOne(u => u.LastName, ln =>
-        {
-            ln.Property(l => l.Value)
-                .HasColumnName("last_name")
-                .HasMaxLength(50)
-                .IsRequired();
-        });
+        builder.Property(l => l.LastName)
+            .HasConversion(
+                v => v.Value,
+                v => new LastName(v))
+            .HasColumnName("last_name")
+            .HasMaxLength(50)
+            .IsRequired();
 
-        builder.OwnsOne(u => u.Email, e =>
-        {
-            e.Property(em => em.Value)
-                .HasColumnName("email")
-                .HasMaxLength(100)
-                .IsRequired();
-        });
+        builder.Property(em => em.Email)
+            .HasConversion(
+                v => v.Value,
+                v => new Domain.Entities.Email(v))
+            .HasColumnName("email")
+            .HasMaxLength(100)
+            .IsRequired();
 
         builder.OwnsOne(u => u.Address, a =>
         {

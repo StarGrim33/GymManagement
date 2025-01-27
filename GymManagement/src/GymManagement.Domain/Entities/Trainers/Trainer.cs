@@ -13,6 +13,10 @@ public sealed class Trainer : Entity
         Email = email;
     }
 
+    private Trainer()
+    {
+    }
+
     public FirstName FirstName { get; private set; }
 
     public LastName LastName { get; private set; }

@@ -1,4 +1,5 @@
-﻿using GymManagement.Application.Abstractions.Messaging;
+﻿using GymManagement.Application.Abstractions.Exceptions;
+using GymManagement.Application.Abstractions.Messaging;
 using GymManagement.Domain.Abstractions;
 using GymManagement.Domain.Entities.Gyms;
 using GymManagement.Domain.Entities.Gyms.Errors;
@@ -54,16 +55,23 @@ internal sealed class BuyMembershipCommandHandler : ICommandHandler<BuyMembershi
             return Result.Failure<Guid>(GymErrors.NotFound);
         }
 
-        // Есть ли у пользователя активный абонемент или это новая покупка
-        var purchaseResult = Membership.Buy(membershipType, user, gym);
-
-        if (purchaseResult.IsNewMembership)
+        try
         {
-            _membershipRepository.Add(purchaseResult.Membership);
+            // Есть ли у пользователя активный абонемент или это новая покупка
+            var purchaseResult = Membership.Buy(membershipType, user, gym);
+
+            if (purchaseResult.IsNewMembership)
+            {
+                _membershipRepository.Add(purchaseResult.Membership);
+            }
+
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            return Result.Success(purchaseResult.Membership.Id);
         }
-
-        await _unitOfWork.SaveChangesAsync(cancellationToken);
-
-        return Result.Success(purchaseResult.Membership.Id);
+        catch (ConcurrencyException)
+        {
+            return Result.Failure<Guid>(MembershipErrors.Overlap);
+        }
     }
 }
