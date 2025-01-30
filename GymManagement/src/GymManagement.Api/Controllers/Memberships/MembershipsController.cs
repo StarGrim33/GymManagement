@@ -1,5 +1,4 @@
-﻿using GymManagement.Api.Controllers.MembershipTypes;
-using GymManagement.Application.Memberships.BuyMembership;
+﻿using GymManagement.Application.Memberships.BuyMembership;
 using GymManagement.Application.Memberships.GetMembership;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -18,6 +17,11 @@ namespace GymManagement.Api.Controllers.Memberships
             var query = new GetMembershipQuery(membershipId);
 
             var result = await sender.Send(query, cancellationToken);
+
+            if (result.IsFailure)
+            {
+                return BadRequest(result.Error);
+            }
 
             return Ok(result.Value);
         }

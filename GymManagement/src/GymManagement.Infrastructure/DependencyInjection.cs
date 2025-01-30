@@ -30,7 +30,9 @@ public static class DependencyInjection
 
         services.AddDbContext<ApplicationDbContext>(options =>
         {
-            options.UseNpgsql(connectionString).UseSnakeCaseNamingConvention();
+            options.UseNpgsql(connectionString).UseSnakeCaseNamingConvention()
+                .EnableSensitiveDataLogging()
+                .LogTo(Console.WriteLine);
         });
 
         services.AddScoped<IUserRepository, UserRepository>();
@@ -45,7 +47,7 @@ public static class DependencyInjection
 
         services.AddScoped<ITrainerRepository, TrainerRepository>();
 
-        services.AddScoped<IUnitOfWork, ApplicationDbContext>();
+        services.AddScoped<IUnitOfWork>(provider => provider.GetRequiredService<ApplicationDbContext>());
 
         services.AddSingleton<ISqlConnectionFactory>(_ => new SqlConnectionFactory(connectionString));
 

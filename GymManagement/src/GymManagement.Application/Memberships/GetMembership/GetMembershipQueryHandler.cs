@@ -20,16 +20,17 @@ internal sealed class GetMembershipQueryHandler : IQueryHandler<GetMembershipQue
         const string sql = """
                            SELECT
                                id AS Id,
-                               user_id AS UserId,
-                               membership_id AS MembershipId,
-                               status AS Status,
+                               name AS Name,
+                               description AS Description,
+                               street AS Status,
                                price_amount AS PriceAmount,
                                start_date AS StartDate,
                                end_date AS EndDate,
                                membership_type AS MembershipType
                            FROM memberships
                            WHERE id = @MembershipId
-                           """;
+                           """
+        ;
 
         using var connection = _sqlConnectionFactory.CreateConnection();
 
@@ -40,6 +41,6 @@ internal sealed class GetMembershipQueryHandler : IQueryHandler<GetMembershipQue
                 request.MembershipId
             });
 
-        return membership;
+        return membership ?? new MembershipResponse();
     }
 }

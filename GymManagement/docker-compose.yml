@@ -12,7 +12,7 @@ services:
     image: postgres:latest
     container_name: Gym-Management.Db
     environment:
-      - POSTGRES_DB=bokify
+      - POSTGRES_DB=gym-management-db
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
     volumes:
