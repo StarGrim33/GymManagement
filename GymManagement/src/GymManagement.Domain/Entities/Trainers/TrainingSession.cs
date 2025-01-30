@@ -11,6 +11,10 @@ public sealed class TrainingSession : Entity
     {
     }
 
+    private TrainingSession()
+    {
+    }
+
     public DateTime StartTime { get; private set; }
 
     public DateTime EndTime { get; private set; }

@@ -11,9 +11,9 @@ public class ValidationBehavior<TRequest, TResponse>
 {
     private readonly IEnumerable<IValidator<TRequest>> _validators;
 
-    public ValidationBehavior(IEnumerable<IValidator<TRequest>> validators)
+    public ValidationBehavior(IEnumerable<IValidator<TRequest>>? validators)
     {
-        _validators = validators;
+        _validators = validators ?? Enumerable.Empty<IValidator<TRequest>>();
     }
 
     public async Task<TResponse> Handle(
@@ -37,7 +37,7 @@ public class ValidationBehavior<TRequest, TResponse>
                 validationFailure.ErrorMessage))
             .ToList();
 
-        if (validationErrors.Count == 0)
+        if (validationErrors.Count != 0)
         {
             throw new Exceptions.ValidationException(validationErrors);
         }

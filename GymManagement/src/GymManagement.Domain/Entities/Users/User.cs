@@ -16,7 +16,8 @@ public sealed class User : Entity
         string phoneNumber,
         DateTime dateOfBirth,
         bool isActive,
-        Roles role, Address address)
+        Roles role, 
+        Address address)
         : base(id)
     {
         FirstName = firstName;
@@ -27,6 +28,10 @@ public sealed class User : Entity
         IsActive = isActive;
         Role = role;
         Address = address;
+    }
+
+    private User()
+    {
     }
 
     public List<Membership> Memberships { get; private set; } = [];

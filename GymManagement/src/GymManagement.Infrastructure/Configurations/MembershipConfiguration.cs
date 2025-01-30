@@ -56,5 +56,7 @@ internal sealed class MembershipConfiguration : IEntityTypeConfiguration<Members
             .WithOne(i => i.Membership)
             .HasForeignKey(i => i.MembershipId)
             .OnDelete(DeleteBehavior.Restrict);
+
+        builder.Property<uint>("Version").IsRowVersion();
     }
 }

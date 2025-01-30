@@ -9,6 +9,10 @@ public sealed class GymEquipment : Entity
     {
     }
 
+    private GymEquipment()
+    {
+    }
+
     public Name Name { get; private set; }
 
     public Description Description { get; private set; }

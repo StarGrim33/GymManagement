@@ -35,6 +35,10 @@ public sealed class Membership : Entity
         MembershipStatus = membershipStatus;
     }
 
+    private Membership()
+    {
+    }
+
     public MembershipType MembershipType { get; private set; }
 
     public Guid MembershipTypeId { get; private set; }

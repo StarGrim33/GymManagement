@@ -18,5 +18,9 @@ public static class MembershipErrors
 
     public static Error NotUnFrozen =
         new("Membership.NotUnFrozen",
-            "The current membership is not frozen");
+            "The current membership is not frozen");    
+    
+    public static Error Overlap =
+        new("Membership.Overlap",
+            "The current membership is being overlapped by another administrator");
 }

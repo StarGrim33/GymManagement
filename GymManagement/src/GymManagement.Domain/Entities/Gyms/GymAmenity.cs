@@ -11,6 +11,10 @@ public sealed class GymAmenity
         Amenity = amenity;
     }
 
+    private GymAmenity()
+    {
+    }
+
     public Guid GymId { get; set; }
 
     public Gym Gym { get; set; }
