@@ -3,6 +3,7 @@ using GymManagement.Application.Abstractions.Messaging;
 using GymManagement.Domain.Abstractions;
 using GymManagement.Domain.Entities.Gyms;
 using GymManagement.Domain.Entities.Gyms.Errors;
+using GymManagement.Domain.Entities.Gyms.QueryOptions;
 using GymManagement.Domain.Entities.Memberships;
 using GymManagement.Domain.Entities.Memberships.Errors;
 using GymManagement.Domain.Entities.Memberships.MembershipTypes;
@@ -48,7 +49,12 @@ internal sealed class BuyMembershipCommandHandler : ICommandHandler<BuyMembershi
             return Result.Failure<Guid>(MembershipErrors.NotFound);
         }
 
-        var gym = await _gymRepository.GetByIdAsync(request.GymId, cancellationToken);
+        var gymQueryOptions = new GymQueryOptions
+        {
+            IncludeMemberships = true,
+        };
+
+        var gym = await _gymRepository.GetAsync(g => g.Id == request.GymId, gymQueryOptions, cancellationToken);
 
         if (gym is null)
         {

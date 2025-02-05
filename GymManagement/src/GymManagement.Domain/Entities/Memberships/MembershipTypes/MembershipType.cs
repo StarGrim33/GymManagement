@@ -1,5 +1,4 @@
 ﻿using GymManagement.Domain.Abstractions;
-using System.Xml.Linq;
 
 namespace GymManagement.Domain.Entities.Memberships.MembershipTypes;
 
@@ -29,4 +28,19 @@ public class MembershipType : Entity
     public decimal Price { get; private set; }
 
     public List<Membership> Memberships { get; private set; } = [];
+
+    public static MembershipType Create(string name,
+        TimeSpan duration,
+        decimal price)
+    {
+        ArgumentNullException.ThrowIfNull(name);
+
+        ArgumentNullException.ThrowIfNull(duration);
+
+        ArgumentNullException.ThrowIfNull(price);
+
+        var membershipType = new MembershipType(Guid.NewGuid(), name, duration, price);
+
+        return membershipType;
+    }
 }

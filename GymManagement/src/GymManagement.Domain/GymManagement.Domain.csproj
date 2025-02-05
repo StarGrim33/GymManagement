@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <Folder Include="Entities\Gyms\Errors\" />
+    <Folder Include="Entities\Gyms\QueryOptions\" />
     <Folder Include="Entities\Memberships\MembershipTypes\Errors\" />
     <Folder Include="Entities\Users\Events\" />
     <Folder Include="Entities\Users\Errors\" />

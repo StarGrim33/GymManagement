@@ -1,5 +1,4 @@
-﻿using GymManagement.Domain.Abstractions;
-using GymManagement.Domain.Entities.Users;
+﻿using GymManagement.Domain.Entities.Users;
 using Microsoft.EntityFrameworkCore;
 
 namespace GymManagement.Infrastructure.Repositories;
@@ -12,7 +11,6 @@ internal sealed class UserRepository(ApplicationDbContext dbContext) : Repositor
     {
         return await _dbContext
             .Set<User>()
-            .AsNoTracking()
             .AsSplitQuery()
             .Include(u => u.Memberships)
             .Include( u => u.TrainingSessions)
