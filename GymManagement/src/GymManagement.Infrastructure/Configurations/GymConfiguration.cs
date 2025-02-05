@@ -1,6 +1,8 @@
-﻿using GymManagement.Domain.Entities.Gyms;
+﻿using GymManagement.Domain.Entities;
+using GymManagement.Domain.Entities.Gyms;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace GymManagement.Infrastructure.Configurations;
 

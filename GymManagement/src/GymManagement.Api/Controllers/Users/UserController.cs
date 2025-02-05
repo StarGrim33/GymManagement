@@ -1,5 +1,6 @@
 ﻿using GymManagement.Application.Users.CreateUser;
 using GymManagement.Application.Users.GetUser;
+using GymManagement.Application.Users.GetUser.GetAllUsers;
 using GymManagement.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -16,6 +17,24 @@ namespace GymManagement.Api.Controllers.Users
             CancellationToken cancellationToken)
         {
             var query = new GetUserQuery(userId);
+
+            var result = await sender.Send(query, cancellationToken);
+
+            if (result.IsFailure)
+            {
+                return BadRequest(result.Error);
+            }
+
+            return Ok(result.Value);
+        }
+
+        [HttpGet("all-users")]
+        public async Task<IActionResult> GetAllUsers(
+        [FromQuery] int pageNumber = 1,
+        [FromQuery] int pageSize = 10,
+        CancellationToken cancellationToken = default)
+        {
+            var query = new GetAllUsersQuery(pageNumber, pageSize);
 
             var result = await sender.Send(query, cancellationToken);
 
