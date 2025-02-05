@@ -7,7 +7,6 @@ namespace GymManagement.Application.Users.GetUser;
 
 public sealed class UserResponse
 {
-
     public Guid Id { get; init; }
 
     public List<Membership> Memberships { get; init; } = [];

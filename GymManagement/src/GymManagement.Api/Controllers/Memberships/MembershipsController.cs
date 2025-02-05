@@ -1,5 +1,6 @@
 ﻿using GymManagement.Application.Memberships.BuyMembership;
 using GymManagement.Application.Memberships.GetMembership;
+using GymManagement.Application.Memberships.GetMembership.GetAllMemberships;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -45,6 +46,24 @@ namespace GymManagement.Api.Controllers.Memberships
 
             return CreatedAtAction(nameof(GetMembership), 
                 new { id = result.Value }, result.Value);
+        }
+
+        [HttpGet("all-memberships")]
+        public async Task<IActionResult> GetAllMemberships(
+            [FromQuery] int pageNumber = 1,
+            [FromQuery] int pageSize = 10,
+            CancellationToken cancellationToken = default)
+        {
+            var query = new GetAllMembershipsQuery(pageNumber, pageSize);
+
+            var result = await sender.Send(query, cancellationToken);
+
+            if (result.IsFailure)
+            {
+                return BadRequest(result.Error);
+            }
+
+            return Ok(result.Value);
         }
     }
 }

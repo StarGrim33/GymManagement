@@ -6,5 +6,9 @@ public interface IUserRepository
 
     Task<User?> GetByEmailAsync(string email, CancellationToken cancellationToken = default);
 
+    Task<int> GetTotalCountAsync(CancellationToken cancellationToken = default);
+
+    Task<List<User>> GetPagedAsync(int pageNumber, int pageSize, CancellationToken cancellationToken = default);
+
     void Add(User user);
 }

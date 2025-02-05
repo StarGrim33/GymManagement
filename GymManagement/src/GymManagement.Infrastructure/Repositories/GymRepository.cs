@@ -2,7 +2,6 @@
 using GymManagement.Domain.Entities.Gyms;
 using GymManagement.Domain.Entities.Gyms.QueryOptions;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 
 namespace GymManagement.Infrastructure.Repositories;
 
@@ -56,7 +55,7 @@ internal sealed class GymRepository(ApplicationDbContext dbContext)
     {
         return await dbContext
             .Set<Gym>()
-            .OrderBy(g => g.Name) // Сортировка по имени (или другому полю)
+            .OrderBy(g => g.Name.Value)
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync(cancellationToken);

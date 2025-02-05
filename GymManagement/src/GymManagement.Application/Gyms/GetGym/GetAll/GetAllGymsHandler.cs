@@ -2,6 +2,7 @@
 using GymManagement.Application.Common;
 using GymManagement.Domain.Abstractions;
 using GymManagement.Domain.Entities.Gyms;
+using GymManagement.Domain.Entities.Memberships.Errors;
 
 namespace GymManagement.Application.Gyms.GetGym.GetAll;
 
@@ -16,13 +17,15 @@ internal sealed class GetAllGymsHandler : IQueryHandler<GetAllGymsQuery, Paginat
 
     public async Task<Result<PaginatedList<GymResponse>>> Handle(GetAllGymsQuery request, CancellationToken cancellationToken)
     {
-        // Получаем общее количество залов
         var totalCount = await _repository.GetTotalCountAsync(cancellationToken);
 
         var gyms = await _repository.GetPagedAsync(
             request.PageNumber,
             request.PageSize,
             cancellationToken);
+
+        if (gyms.Count == 0)
+            return Result.Failure<PaginatedList<GymResponse>>(MembershipErrors.NotFound);
 
         var gymResponses = gyms.Select(g => new GymResponse
         {
