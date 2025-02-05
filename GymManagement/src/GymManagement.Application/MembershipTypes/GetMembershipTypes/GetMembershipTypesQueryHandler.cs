@@ -19,11 +19,7 @@ internal sealed class GetMembershipTypesQueryHandler : IQueryHandler<GetMembersh
     {
         const string sql = """
                            SELECT *
-                               m.id AS Id,
-                               m.name AS Name,
-                               m.duration as Duration,
-                               m.price as Price
-                           FROM membership_types AS m
+                           FROM membership_type
                            """;
 
         using var connection = _sqlConnectionFactory.CreateConnection();

@@ -9,4 +9,6 @@ public sealed class MembershipTypesResponse
     public TimeSpan Duration { get; init; }
 
     public decimal Price { get; init; }
+
+    public int DurationInDays => (int)Duration.TotalDays;
 }

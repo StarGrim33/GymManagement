@@ -80,9 +80,9 @@ public sealed class User : Entity
         return user;
     }
 
-    public void AddMembership(Membership membership)
+    internal void AddMembership(Membership membership)
     {
-        if (membership == null) throw new ArgumentNullException(nameof(membership));
+        ArgumentNullException.ThrowIfNull(membership);
 
         Memberships.Add(membership);
     }

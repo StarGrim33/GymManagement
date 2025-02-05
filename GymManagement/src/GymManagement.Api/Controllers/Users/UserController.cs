@@ -29,7 +29,7 @@ namespace GymManagement.Api.Controllers.Users
 
         [HttpPost]
         public async Task<IActionResult> CreateUser(
-            CreateUserRequest request,
+            [FromBody] CreateUserRequest request,
             CancellationToken cancellationToken)
         {
             var command = new CreateUserCommand(request.FirstName, 
