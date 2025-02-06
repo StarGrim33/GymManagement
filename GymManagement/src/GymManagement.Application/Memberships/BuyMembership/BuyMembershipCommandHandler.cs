@@ -12,29 +12,17 @@ using GymManagement.Domain.Entities.Users.Errors;
 
 namespace GymManagement.Application.Memberships.BuyMembership;
 
-internal sealed class BuyMembershipCommandHandler : ICommandHandler<BuyMembershipCommand, Guid>
+internal sealed class BuyMembershipCommandHandler(
+    IUserRepository userRepository,
+    IMembershipTypeRepository membershipTypeRepository,
+    IUnitOfWork unitOfWork,
+    IGymRepository gymRepository,
+    IMembershipRepository membershipRepository)
+    : ICommandHandler<BuyMembershipCommand, Guid>
 {
-    private readonly IUserRepository _userRepository;
-    private readonly IMembershipTypeRepository _membershipTypeRepository;
-    private readonly IMembershipRepository _membershipRepository;
-    private readonly IGymRepository _gymRepository;
-    private readonly IUnitOfWork _unitOfWork;
-
-    public BuyMembershipCommandHandler(
-        IUserRepository userRepository, 
-        IMembershipTypeRepository membershipTypeRepository, 
-        IUnitOfWork unitOfWork, IGymRepository gymRepository, IMembershipRepository membershipRepository)
-    {
-        _userRepository = userRepository;
-        _membershipTypeRepository = membershipTypeRepository;
-        _unitOfWork = unitOfWork;
-        _gymRepository = gymRepository;
-        _membershipRepository = membershipRepository;
-    }
-
     public async Task<Result<Guid>> Handle(BuyMembershipCommand request, CancellationToken cancellationToken)
     {
-        var user = await _userRepository.GetByIdAsync(request.UserId, cancellationToken);
+        var user = await userRepository.GetByIdAsync(request.UserId, cancellationToken);
 
         if (user is null)
         {
@@ -42,7 +30,7 @@ internal sealed class BuyMembershipCommandHandler : ICommandHandler<BuyMembershi
         }
 
         // Получить тип членства
-        var membershipType = await _membershipTypeRepository.GetByIdAsync(request.MembershipTypeId, cancellationToken);
+        var membershipType = await membershipTypeRepository.GetByIdAsync(request.MembershipTypeId, cancellationToken);
 
         if (membershipType is null)
         {
@@ -54,7 +42,7 @@ internal sealed class BuyMembershipCommandHandler : ICommandHandler<BuyMembershi
             IncludeMemberships = true,
         };
 
-        var gym = await _gymRepository.GetAsync(g => g.Id == request.GymId, gymQueryOptions, cancellationToken);
+        var gym = await gymRepository.GetAsync(g => g.Id == request.GymId, gymQueryOptions, cancellationToken);
 
         if (gym is null)
         {
@@ -68,10 +56,10 @@ internal sealed class BuyMembershipCommandHandler : ICommandHandler<BuyMembershi
 
             if (purchaseResult.IsNewMembership)
             {
-                _membershipRepository.Add(purchaseResult.Membership);
+                membershipRepository.AddAsync(purchaseResult.Membership);
             }
 
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
+            await unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Result.Success(purchaseResult.Membership.Id);
         }

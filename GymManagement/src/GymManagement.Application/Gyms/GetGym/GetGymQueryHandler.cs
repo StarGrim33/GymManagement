@@ -4,18 +4,11 @@ using GymManagement.Domain.Entities.Gyms;
 
 namespace GymManagement.Application.Gyms.GetGym;
 
-internal sealed class GetGymQueryHandler : IQueryHandler<GetGymQuery, GymResponse>
+internal sealed class GetGymQueryHandler(IGymRepository repository) : IQueryHandler<GetGymQuery, GymResponse>
 {
-    private readonly IGymRepository _repository;
-
-    public GetGymQueryHandler(IGymRepository repository)
-    {
-        _repository = repository;
-    }
-
     public async Task<Result<GymResponse>> Handle(GetGymQuery request, CancellationToken cancellationToken)
     {
-        var gym = await _repository.GetByIdAsync(request.GymId, cancellationToken);
+        var gym = await repository.GetByIdAsync(request.GymId, cancellationToken);
 
         if (gym == null)
         {

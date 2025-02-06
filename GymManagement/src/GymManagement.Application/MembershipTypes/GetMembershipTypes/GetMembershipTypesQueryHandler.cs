@@ -6,15 +6,9 @@ using GymManagement.Domain.Entities.Memberships.MembershipTypes.Errors;
 
 namespace GymManagement.Application.MembershipTypes.GetMembershipTypes;
 
-internal sealed class GetMembershipTypesQueryHandler : IQueryHandler<GetMembershipTypesQuery, IReadOnlyList<MembershipTypesResponse>>
+internal sealed class GetMembershipTypesQueryHandler(ISqlConnectionFactory sqlConnectionFactory)
+    : IQueryHandler<GetMembershipTypesQuery, IReadOnlyList<MembershipTypesResponse>>
 {
-    private readonly ISqlConnectionFactory _sqlConnectionFactory;
-
-    public GetMembershipTypesQueryHandler(ISqlConnectionFactory sqlConnectionFactory)
-    {
-        _sqlConnectionFactory = sqlConnectionFactory;
-    }
-
     public async Task<Result<IReadOnlyList<MembershipTypesResponse>>> Handle(GetMembershipTypesQuery request, CancellationToken cancellationToken)
     {
         const string sql = """
@@ -22,7 +16,7 @@ internal sealed class GetMembershipTypesQueryHandler : IQueryHandler<GetMembersh
                            FROM membership_type
                            """;
 
-        using var connection = _sqlConnectionFactory.CreateConnection();
+        using var connection = sqlConnectionFactory.CreateConnection();
 
         var membershipType = await connection
             .QueryAsync<MembershipTypesResponse>(

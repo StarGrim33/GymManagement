@@ -13,8 +13,20 @@ internal abstract class Repository<T>(ApplicationDbContext dbContext)
             .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
     }
 
-    public void Add(T entity)
+    public virtual async Task AddAsync(T entity, CancellationToken cancellationToken = default)
     {
-        dbContext.Set<T>().Add(entity);
+        await dbContext.Set<T>().AddAsync(entity, cancellationToken);
+    }
+
+    public virtual Task Update(T entity)
+    {
+        dbContext.Set<T>().Update(entity);
+        return Task.CompletedTask;
+    }
+
+    public virtual Task Delete(T entity)
+    {
+        dbContext.Set<T>().Remove(entity);
+        return Task.CompletedTask;
     }
 }

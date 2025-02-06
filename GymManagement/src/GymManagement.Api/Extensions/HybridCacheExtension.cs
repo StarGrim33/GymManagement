@@ -9,8 +9,8 @@
             {
                 options.DefaultEntryOptions = new Microsoft.Extensions.Caching.Hybrid.HybridCacheEntryOptions()
                 {
-                    LocalCacheExpiration = TimeSpan.FromMinutes(5),
-                    Expiration = TimeSpan.FromMinutes(5),
+                    LocalCacheExpiration = TimeSpan.FromMinutes(2),
+                    Expiration = TimeSpan.FromMinutes(2)
                 };
             });
 #pragma warning restore EXTEXP0018

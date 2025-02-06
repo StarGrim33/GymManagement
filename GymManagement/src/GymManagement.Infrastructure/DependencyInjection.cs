@@ -11,6 +11,7 @@ using GymManagement.Domain.Entities.Users;
 using GymManagement.Infrastructure.Data;
 using GymManagement.Infrastructure.Email;
 using GymManagement.Infrastructure.Repositories;
+using GymManagement.Infrastructure.Repositories.CachedRepositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -37,15 +38,25 @@ public static class DependencyInjection
 
         services.AddScoped<IUserRepository, UserRepository>();
 
+        services.Decorate<IUserRepository, CachedUserRepository>();
+
         services.AddScoped<IMembershipRepository, MembershipRepository>();
+
+        services.Decorate<IMembershipRepository, CachedMembershipRepository>();
 
         services.AddScoped<IMembershipTypeRepository, MembershipTypeRepository>();
 
+        services.Decorate<IMembershipTypeRepository, CachedMembershipTypeRepository>();
+
         services.AddScoped<IInvoiceRepository, InvoiceRepository>();
+
 
         services.AddScoped<IGymRepository, GymRepository>();
 
+        services.Decorate<IGymRepository, CachedGymRepository>();
+
         services.AddScoped<ITrainerRepository, TrainerRepository>();
+
 
         services.AddScoped<IUnitOfWork>(provider => provider.GetRequiredService<ApplicationDbContext>());
 

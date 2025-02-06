@@ -6,20 +6,14 @@ using GymManagement.Domain.Entities.Memberships.Errors;
 
 namespace GymManagement.Application.Gyms.GetGym.GetAll;
 
-internal sealed class GetAllGymsHandler : IQueryHandler<GetAllGymsQuery, PaginatedList<GymResponse>>
+internal sealed class GetAllGymsHandler(IGymRepository repository)
+    : IQueryHandler<GetAllGymsQuery, PaginatedList<GymResponse>>
 {
-    private readonly IGymRepository _repository;
-
-    public GetAllGymsHandler(IGymRepository repository)
-    {
-        _repository = repository;
-    }
-
     public async Task<Result<PaginatedList<GymResponse>>> Handle(GetAllGymsQuery request, CancellationToken cancellationToken)
     {
-        var totalCount = await _repository.GetTotalCountAsync(cancellationToken);
+        var totalCount = await repository.GetTotalCountAsync(cancellationToken);
 
-        var gyms = await _repository.GetPagedAsync(
+        var gyms = await repository.GetPagedAsync(
             request.PageNumber,
             request.PageSize,
             cancellationToken);
