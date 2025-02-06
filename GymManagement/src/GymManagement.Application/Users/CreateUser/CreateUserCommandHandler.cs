@@ -5,21 +5,13 @@ using GymManagement.Domain.Entities.Users.Errors;
 
 namespace GymManagement.Application.Users.CreateUser;
 
-internal sealed class CreateUserCommandHandler : ICommandHandler<CreateUserCommand, Guid>
+internal sealed class CreateUserCommandHandler(IUserRepository userRepository, IUnitOfWork unitOfWork)
+    : ICommandHandler<CreateUserCommand, Guid>
 {
-    private readonly IUserRepository _userRepository;
-    private readonly IUnitOfWork _unitOfWork;
-
-    public CreateUserCommandHandler(IUserRepository userRepository, IUnitOfWork unitOfWork)
-    {
-        _userRepository = userRepository;
-        _unitOfWork = unitOfWork;
-    }
-
     public async Task<Result<Guid>> Handle(CreateUserCommand request, CancellationToken cancellationToken)
     {
         var normalizedEmail = NormalizeEmail(request.Email.Value);
-        var existingUser = await _userRepository.GetByEmailAsync(normalizedEmail, cancellationToken);
+        var existingUser = await userRepository.GetByEmailAsync(normalizedEmail, cancellationToken);
 
         if (existingUser != null)
         {
@@ -37,9 +29,9 @@ internal sealed class CreateUserCommandHandler : ICommandHandler<CreateUserComma
             request.Address
         );
 
-        _userRepository.Add(newUser);
+        userRepository.Add(newUser);
 
-        await _unitOfWork.SaveChangesAsync(cancellationToken);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
 
         return Result.Success(newUser.Id);
     }

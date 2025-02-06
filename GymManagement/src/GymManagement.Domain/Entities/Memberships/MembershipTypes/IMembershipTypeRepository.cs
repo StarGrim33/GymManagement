@@ -6,5 +6,9 @@ public interface IMembershipTypeRepository
 
     Task<MembershipType?> GetByNameAsync(string name, CancellationToken cancellationToken = default);
 
-    void Add(MembershipType membershipType);
+    Task AddAsync(MembershipType membershipType, CancellationToken cancellationToken = default);
+
+    Task Update(MembershipType membershipType);
+
+    Task Delete(MembershipType membershipType);
 }

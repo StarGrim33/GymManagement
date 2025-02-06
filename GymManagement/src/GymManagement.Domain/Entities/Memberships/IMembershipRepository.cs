@@ -8,5 +8,9 @@ public interface IMembershipRepository
 
     Task<List<Membership>> GetPagedAsync(int pageNumber, int pageSize, CancellationToken cancellationToken = default);
 
-    void Add(Membership membership);
+    Task AddAsync(Membership membership, CancellationToken cancellationToken = default);
+
+    Task Update(Membership membership);
+
+    Task Delete(Membership membership);
 }

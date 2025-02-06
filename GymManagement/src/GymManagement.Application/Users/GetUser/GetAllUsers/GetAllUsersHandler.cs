@@ -1,25 +1,18 @@
 ﻿using GymManagement.Application.Abstractions.Messaging;
 using GymManagement.Application.Common;
 using GymManagement.Domain.Abstractions;
-using GymManagement.Domain.Entities;
 using GymManagement.Domain.Entities.Users;
 
 namespace GymManagement.Application.Users.GetUser.GetAllUsers
 {
-    internal sealed class GetAllUsersHandler : IQueryHandler<GetAllUsersQuery, PaginatedList<UserResponse>>
+    internal sealed class GetAllUsersHandler(IUserRepository repository)
+        : IQueryHandler<GetAllUsersQuery, PaginatedList<UserResponse>>
     {
-        private readonly IUserRepository _repository;
-
-        public GetAllUsersHandler(IUserRepository repository)
-        {
-            _repository = repository;
-        }
-
         public async Task<Result<PaginatedList<UserResponse>>> Handle(GetAllUsersQuery request, CancellationToken cancellationToken)
         {
-            var totalCount = await _repository.GetTotalCountAsync(cancellationToken);
+            var totalCount = await repository.GetTotalCountAsync(cancellationToken);
 
-            var users = await _repository.GetPagedAsync(
+            var users = await repository.GetPagedAsync(
                 request.PageNumber,
                 request.PageSize,
                 cancellationToken);

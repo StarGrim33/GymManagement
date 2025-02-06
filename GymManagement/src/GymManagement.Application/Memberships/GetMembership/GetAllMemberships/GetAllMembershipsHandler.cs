@@ -4,24 +4,17 @@ using GymManagement.Application.MembershipTypes;
 using GymManagement.Domain.Abstractions;
 using GymManagement.Domain.Entities.Memberships;
 using GymManagement.Domain.Entities.Memberships.Errors;
-using GymManagement.Domain.Entities.Memberships.MembershipTypes;
 
 namespace GymManagement.Application.Memberships.GetMembership.GetAllMemberships;
 
-internal sealed class GetAllMembershipsHandler : IQueryHandler<GetAllMembershipsQuery, PaginatedList<MembershipResponse>>
+internal sealed class GetAllMembershipsHandler(IMembershipRepository repository)
+    : IQueryHandler<GetAllMembershipsQuery, PaginatedList<MembershipResponse>>
 {
-    private readonly IMembershipRepository _repository;
-
-    public GetAllMembershipsHandler(IMembershipRepository repository)
-    {
-        _repository = repository;
-    }
-
     public async Task<Result<PaginatedList<MembershipResponse>>> Handle(GetAllMembershipsQuery request, CancellationToken cancellationToken)
     {
-        var totalCount = await _repository.GetTotalCountAsync(cancellationToken);
+        var totalCount = await repository.GetTotalCountAsync(cancellationToken);
 
-        var memberships = await _repository.GetPagedAsync(
+        var memberships = await repository.GetPagedAsync(
             request.PageNumber,
             request.PageSize,
             cancellationToken);

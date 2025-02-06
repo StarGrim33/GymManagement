@@ -5,15 +5,9 @@ using GymManagement.Domain.Entities.Gyms.QueryOptions;
 
 namespace GymManagement.Application.Gyms.GetGym.GetGymByQueryOptions;
 
-internal sealed class GetGymByQueryOptionsHandler : IQueryHandler<GetGymByQueryOptionsQuery, GymResponse>
+internal sealed class GetGymByQueryOptionsHandler(IGymRepository repository)
+    : IQueryHandler<GetGymByQueryOptionsQuery, GymResponse>
 {
-    private readonly IGymRepository _repository;
-
-    public GetGymByQueryOptionsHandler(IGymRepository repository)
-    {
-        _repository = repository;
-    }
-
     public async Task<Result<GymResponse>> Handle(GetGymByQueryOptionsQuery request, CancellationToken cancellationToken)
     {
         var queryOptions = new GymQueryOptions
@@ -26,7 +20,7 @@ internal sealed class GetGymByQueryOptionsHandler : IQueryHandler<GetGymByQueryO
             IncludeTrainingSessions = request.DoIncludeTrainingSessions
         };
 
-        var gym = await _repository.GetAsync(x => x.Id == request.GymId, queryOptions, cancellationToken);
+        var gym = await repository.GetAsync(x => x.Id == request.GymId, queryOptions, cancellationToken);
 
         if (gym == null)
         {

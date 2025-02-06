@@ -10,5 +10,9 @@ public interface IUserRepository
 
     Task<List<User>> GetPagedAsync(int pageNumber, int pageSize, CancellationToken cancellationToken = default);
 
-    void Add(User user);
+    Task AddAsync(User user, CancellationToken cancellationToken = default);
+
+    Task Update(User user);
+
+    Task Delete(User user);
 }

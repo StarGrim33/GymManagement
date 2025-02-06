@@ -4,18 +4,11 @@ using GymManagement.Domain.Entities.Users;
 
 namespace GymManagement.Application.Users.GetUser;
 
-internal sealed class GetUserQueryHandler : IQueryHandler<GetUserQuery, UserResponse>
+internal sealed class GetUserQueryHandler(IUserRepository userRepository) : IQueryHandler<GetUserQuery, UserResponse>
 {
-    private readonly IUserRepository _userRepository;
-
-    public GetUserQueryHandler(IUserRepository userRepository)
-    {
-        _userRepository = userRepository;
-    }
-
     public async Task<Result<UserResponse>> Handle(GetUserQuery request, CancellationToken cancellationToken)
     {
-        var user = await _userRepository.GetByIdAsync(request.UserId, cancellationToken);
+        var user = await userRepository.GetByIdAsync(request.UserId, cancellationToken);
 
         if (user == null)
         {

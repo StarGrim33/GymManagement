@@ -5,20 +5,12 @@ using GymManagement.Domain.Entities.Gyms.Errors;
 
 namespace GymManagement.Application.Gyms.CreateGym;
 
-internal sealed class CreateGymCommandHandler : ICommandHandler<CreateGymCommand, Guid>
+internal sealed class CreateGymCommandHandler(IGymRepository gymRepository, IUnitOfWork unitOfWork)
+    : ICommandHandler<CreateGymCommand, Guid>
 {
-    private readonly IGymRepository _gymRepository;
-    private readonly IUnitOfWork _unitOfWork;
-
-    public CreateGymCommandHandler(IGymRepository gymRepository, IUnitOfWork unitOfWork)
-    {
-        _gymRepository = gymRepository;
-        _unitOfWork = unitOfWork;
-    }
-
     public async Task<Result<Guid>> Handle(CreateGymCommand request, CancellationToken cancellationToken)
     {
-        var gym = await _gymRepository.GetByNameAsync(request.Name.Value, cancellationToken);
+        var gym = await gymRepository.GetByNameAsync(request.Name.Value, cancellationToken);
 
         if (gym is not null)
         {
@@ -31,7 +23,7 @@ internal sealed class CreateGymCommandHandler : ICommandHandler<CreateGymCommand
             request.Address,
             request.Schedule);
 
-        await _unitOfWork.SaveChangesAsync(cancellationToken);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
 
         return Result.Success(newGym.Id);
     }

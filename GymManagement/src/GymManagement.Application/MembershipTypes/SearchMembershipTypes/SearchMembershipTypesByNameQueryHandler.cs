@@ -6,16 +6,9 @@ using GymManagement.Domain.Entities.Memberships.MembershipTypes.Errors;
 
 namespace GymManagement.Application.MembershipTypes.SearchMembershipTypes;
 
-internal sealed class SearchMembershipTypesByNameQueryHandler
+internal sealed class SearchMembershipTypesByNameQueryHandler(ISqlConnectionFactory sqlConnectionFactory)
     : IQueryHandler<SearchMembershipTypesByNameQuery, MembershipTypesResponse>
 {
-    private readonly ISqlConnectionFactory _sqlConnectionFactory;
-
-    public SearchMembershipTypesByNameQueryHandler(ISqlConnectionFactory sqlConnectionFactory)
-    {
-        _sqlConnectionFactory = sqlConnectionFactory;
-    }
-
     public async Task<Result<MembershipTypesResponse>> Handle(
         SearchMembershipTypesByNameQuery request,
         CancellationToken cancellationToken)
@@ -35,7 +28,7 @@ internal sealed class SearchMembershipTypesByNameQueryHandler
             Result.Failure<MembershipTypesResponse>(MembershipTypesErrors.EmptyName);
         }
 
-        using var connection = _sqlConnectionFactory.CreateConnection();
+        using var connection = sqlConnectionFactory.CreateConnection();
 
         var membershipType = await connection
             .QueryFirstOrDefaultAsync<MembershipTypesResponse>(

@@ -30,7 +30,7 @@ public sealed class User : Entity
         Address = address;
     }
 
-    private User()
+    public User()
     {
     }
 
