@@ -21,17 +21,17 @@ public sealed class Gym : Entity
         Schedule = schedule ?? throw new ArgumentNullException(nameof(schedule));
     }
 
-    private Gym()
+    public Gym()
     {
     }
 
-    public Name Name { get; private set; }
+    public Name Name { get;  set; }
 
-    public Description Description { get; private set; }
+    public Description Description { get;  set; }
 
-    public Address Address { get; private set; }
+    public Address Address { get;  set; }
 
-    public Schedule Schedule { get; private set; }
+    public Schedule Schedule { get;  set; }
 
     public List<GymAmenity> GymAmenities { get; private set; } = [];
 
@@ -62,6 +62,18 @@ public sealed class Gym : Entity
         // gym.RaiseDomainEvent(new GymCreatedDomainEvent(gym.Id));
 
         return gym;
+    }
+
+    public void Update(
+        Name name,
+        Description description,
+        Address address,
+        Schedule schedule)
+    {
+        Name = name;
+        Description = description;
+        Address = address;
+        Schedule = schedule;
     }
 
     public void AddAmenity(GymAmenity amenity)

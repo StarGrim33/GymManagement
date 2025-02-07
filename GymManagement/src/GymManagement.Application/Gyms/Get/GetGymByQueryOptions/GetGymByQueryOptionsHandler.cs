@@ -3,7 +3,7 @@ using GymManagement.Domain.Abstractions;
 using GymManagement.Domain.Entities.Gyms;
 using GymManagement.Domain.Entities.Gyms.QueryOptions;
 
-namespace GymManagement.Application.Gyms.GetGym.GetGymByQueryOptions;
+namespace GymManagement.Application.Gyms.Get.GetGymByQueryOptions;
 
 internal sealed class GetGymByQueryOptionsHandler(IGymRepository repository)
     : IQueryHandler<GetGymByQueryOptionsQuery, GymResponse>

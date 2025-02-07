@@ -50,6 +50,7 @@ public static class DependencyInjection
 
         services.AddScoped<IInvoiceRepository, InvoiceRepository>();
 
+        services.Decorate<IInvoiceRepository, CachedInvoiceRepository>();
 
         services.AddScoped<IGymRepository, GymRepository>();
 
@@ -57,6 +58,7 @@ public static class DependencyInjection
 
         services.AddScoped<ITrainerRepository, TrainerRepository>();
 
+        services.Decorate<ITrainerRepository, CachedTrainerRepository>();
 
         services.AddScoped<IUnitOfWork>(provider => provider.GetRequiredService<ApplicationDbContext>());
 

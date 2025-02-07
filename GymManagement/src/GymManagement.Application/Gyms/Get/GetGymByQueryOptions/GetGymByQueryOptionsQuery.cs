@@ -1,6 +1,6 @@
 ﻿using GymManagement.Application.Abstractions.Messaging;
 
-namespace GymManagement.Application.Gyms.GetGym.GetGymByQueryOptions;
+namespace GymManagement.Application.Gyms.Get.GetGymByQueryOptions;
 
 public record GetGymByQueryOptionsQuery(
     Guid GymId,

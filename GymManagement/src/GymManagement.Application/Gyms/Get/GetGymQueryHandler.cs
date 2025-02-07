@@ -2,7 +2,7 @@
 using GymManagement.Domain.Abstractions;
 using GymManagement.Domain.Entities.Gyms;
 
-namespace GymManagement.Application.Gyms.GetGym;
+namespace GymManagement.Application.Gyms.Get;
 
 internal sealed class GetGymQueryHandler(IGymRepository repository) : IQueryHandler<GetGymQuery, GymResponse>
 {

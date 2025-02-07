@@ -21,7 +21,7 @@ internal sealed class CreateMembershipTypeCommandHandler(
 
         var newMembershipType = MembershipType.Create(request.Name, request.Duration, request.Price);
 
-        membershipTypeRepository.Add(newMembershipType);
+        await membershipTypeRepository.AddAsync(newMembershipType, cancellationToken);
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 

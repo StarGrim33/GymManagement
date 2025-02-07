@@ -1,4 +1,5 @@
 ﻿using System.Linq.Expressions;
+using GymManagement.Domain.Entities;
 using GymManagement.Domain.Entities.Gyms;
 using GymManagement.Domain.Entities.Gyms.QueryOptions;
 using Microsoft.EntityFrameworkCore;
@@ -51,14 +52,26 @@ internal sealed class GymRepository(ApplicationDbContext dbContext)
         return await dbContext.Set<Gym>().CountAsync(cancellationToken);
     }
 
-    public async Task<List<Gym>> GetPagedAsync(int pageNumber, int pageSize, CancellationToken cancellationToken = default)
+    public async Task<List<GymDto>> GetPagedAsync(int pageNumber, int pageSize, CancellationToken cancellationToken = default)
     {
         return await dbContext
             .Set<Gym>()
             .OrderBy(g => g.Name.Value)
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)
-            .ToListAsync(cancellationToken);
+            .Select(g => new GymDto
+            {
+                Id = g.Id,
+                Name = g.Name.Value,
+                Description = g.Description.Value,
+                Address = new AddressDto
+                {
+                    Street = g.Address.Street,
+                    City = g.Address.City,
+                    ZipCode = g.Address.ZipCode
+                },
+                Schedule = g.Schedule.Value
+            }).ToListAsync(cancellationToken);
     }
 
     public override async Task<Gym?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)

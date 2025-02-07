@@ -1,10 +1,11 @@
 ﻿using GymManagement.Application.Abstractions.Messaging;
 using GymManagement.Application.Common;
 using GymManagement.Domain.Abstractions;
+using GymManagement.Domain.Entities;
 using GymManagement.Domain.Entities.Gyms;
 using GymManagement.Domain.Entities.Memberships.Errors;
 
-namespace GymManagement.Application.Gyms.GetGym.GetAll;
+namespace GymManagement.Application.Gyms.Get.GetAll;
 
 internal sealed class GetAllGymsHandler(IGymRepository repository)
     : IQueryHandler<GetAllGymsQuery, PaginatedList<GymResponse>>
@@ -24,10 +25,10 @@ internal sealed class GetAllGymsHandler(IGymRepository repository)
         var gymResponses = gyms.Select(g => new GymResponse
         {
             Id = g.Id,
-            Name = g.Name,
-            Description = g.Description,
-            Address = g.Address,
-            Schedule = g.Schedule
+            Name = new Name(g.Name),
+            Description = new Description(g.Description),
+            Address = new Address(g.Address.City, g.Address.Street, g.Address.ZipCode),
+            Schedule = new Schedule(g.Schedule)
         }).ToList();
 
         var paginatedList = new PaginatedList<GymResponse>(

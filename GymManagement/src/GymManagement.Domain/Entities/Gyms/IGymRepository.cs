@@ -14,7 +14,7 @@ public interface IGymRepository
 
     Task<int> GetTotalCountAsync(CancellationToken cancellationToken = default);
 
-    Task<List<Gym>> GetPagedAsync(int pageNumber, int pageSize, CancellationToken cancellationToken = default);
+    Task<List<GymDto>> GetPagedAsync(int pageNumber, int pageSize, CancellationToken cancellationToken = default);
 
     Task AddAsync(Gym gym, CancellationToken cancellationToken = default);
 

@@ -2,7 +2,7 @@
 using GymManagement.Domain.Entities;
 using GymManagement.Domain.Entities.Gyms;
 
-namespace GymManagement.Application.Gyms.CreateGym;
+namespace GymManagement.Application.Gyms.Create;
 
 public sealed record CreateGymCommand(
     Name Name,

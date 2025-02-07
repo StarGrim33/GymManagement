@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using GymManagement.Domain.Entities;
 
-namespace GymManagement.Application.Gyms.CreateGym.Validators;
+namespace GymManagement.Application.Gyms.Create.Validators;
 
 public class DescriptionValidator : AbstractValidator<Description>
 {

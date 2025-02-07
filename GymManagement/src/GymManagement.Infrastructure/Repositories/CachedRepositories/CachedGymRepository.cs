@@ -1,4 +1,6 @@
 ﻿using System.Linq.Expressions;
+using GymManagement.Application.Gyms.Get;
+using GymManagement.Domain.Entities;
 using GymManagement.Domain.Entities.Gyms;
 using GymManagement.Domain.Entities.Gyms.QueryOptions;
 using GymManagement.Infrastructure.Repositories.CacheKeys;
@@ -49,14 +51,26 @@ public class CachedGymRepository(IGymRepository gymRepository, HybridCache hybri
         return totalCount;
     }
 
-    public async Task<List<Gym>> GetPagedAsync(int pageNumber, int pageSize, CancellationToken cancellationToken = default)
+    public async Task<List<GymDto>> GetPagedAsync(int pageNumber, int pageSize, CancellationToken cancellationToken = default)
     {
         var cacheKey = CachedKeys.GymsPaged(pageNumber, pageSize);
 
         var cachedGyms = await hybridCache.GetOrCreateAsync(cacheKey, async token =>
         {
             var gyms = await gymRepository.GetPagedAsync(pageNumber, pageSize, token);
-            return gyms;
+            return gyms.Select(g => new GymDto
+            {
+                Id = g.Id,
+                Name = g.Name,
+                Description = g.Description,
+                Address = new AddressDto
+                {
+                    Street = g.Address.Street,
+                    City = g.Address.City,
+                    ZipCode = g.Address.ZipCode
+                },
+                Schedule = g.Schedule
+            }).ToList();
         }, cancellationToken: cancellationToken);
 
         return cachedGyms;

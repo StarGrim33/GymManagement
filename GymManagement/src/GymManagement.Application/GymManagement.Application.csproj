@@ -20,6 +20,7 @@
   <ItemGroup>
     <Folder Include="Abstractions\Email\" />
     <Folder Include="Abstractions\Data\" />
+    <Folder Include="Gyms\Update\" />
   </ItemGroup>
 
 </Project>

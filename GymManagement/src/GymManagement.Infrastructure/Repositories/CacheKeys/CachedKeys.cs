@@ -27,4 +27,12 @@ public static class CachedKeys
     public static string MembershipTypeById(Guid id) => $"membershipType-{id}";
 
     public static string MembershipTypeByName(string name) => $"membershipType-{name}";
+
+    public static string InvoiceById(Guid id) => $"invoice-{id}";
+
+    public static string TrainerById(Guid id) => $"trainer-{id}";
+
+    public static string TrainerByName(string name) => $"trainer-{name}";
+
+    public static string TrainerByEmail(string email) => $"trainer-email-{email}";
 }
