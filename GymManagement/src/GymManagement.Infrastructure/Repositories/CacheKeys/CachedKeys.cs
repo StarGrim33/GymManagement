@@ -10,7 +10,7 @@ public static class CachedKeys
 
     public static string UsersTotalCount => "users-total-count";
 
-    public static string GymByName(string name) => $"gym-{name}";
+    public static string GymByName(string? name) => $"gym-{name}";
 
     public static string GymById(Guid gymId) => $"gym-{gymId}";
 

@@ -2,11 +2,5 @@
 
 namespace GymManagement.Application.Gyms.Get.GetGymByQueryOptions;
 
-public record GetGymByQueryOptionsQuery(
-    Guid GymId,
-    bool DoIncludeAmenities,
-    bool DoIncludeTrainers,
-    bool DoIncludeEquipment,
-    bool DoIncludeMemberships,
-    bool DoIncludeTrainingSessions,
+public record GetGymByQueryOptionsQuery(Guid GymId,
     bool IsAsNoTracking) : IQuery<GymResponse>;

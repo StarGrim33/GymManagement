@@ -3,7 +3,6 @@ using GymManagement.Application.Abstractions.Messaging;
 using GymManagement.Domain.Abstractions;
 using GymManagement.Domain.Entities.Gyms;
 using GymManagement.Domain.Entities.Gyms.Errors;
-using GymManagement.Domain.Entities.Gyms.QueryOptions;
 using GymManagement.Domain.Entities.Memberships;
 using GymManagement.Domain.Entities.Memberships.Errors;
 using GymManagement.Domain.Entities.Memberships.MembershipTypes;
@@ -37,12 +36,7 @@ internal sealed class BuyMembershipCommandHandler(
             return Result.Failure<Guid>(MembershipErrors.NotFound);
         }
 
-        var gymQueryOptions = new GymQueryOptions
-        {
-            IncludeMemberships = true,
-        };
-
-        var gym = await gymRepository.GetAsync(g => g.Id == request.GymId, gymQueryOptions, cancellationToken);
+        var gym = await gymRepository.GetEntityByIdAsync(request.GymId, cancellationToken);
 
         if (gym is null)
         {
@@ -56,7 +50,7 @@ internal sealed class BuyMembershipCommandHandler(
 
             if (purchaseResult.IsNewMembership)
             {
-                membershipRepository.AddAsync(purchaseResult.Membership);
+                await membershipRepository.AddAsync(purchaseResult.Membership, cancellationToken);
             }
 
             await unitOfWork.SaveChangesAsync(cancellationToken);

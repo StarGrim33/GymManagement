@@ -9,7 +9,7 @@ namespace GymManagement.Infrastructure.Repositories;
 internal sealed class GymRepository(ApplicationDbContext dbContext) 
     : Repository<Gym>(dbContext), IGymRepository
 {
-    public async Task<Gym?> GetByNameAsync(string name, CancellationToken cancellationToken = default)
+    public async Task<Gym?> GetEntityByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         return await dbContext
             .Set<Gym>()
@@ -19,32 +19,53 @@ internal sealed class GymRepository(ApplicationDbContext dbContext)
             .Include(g => g.Equipment)
             .Include(g => g.Memberships)
             .Include(g => g.TrainingSessions)
-            .FirstOrDefaultAsync(g => g.Name.Value == name, cancellationToken);
+            .FirstOrDefaultAsync(g => g.Id == id, cancellationToken);
     }
 
-    public async Task<Gym?> GetAsync(Expression<Func<Gym, bool>> predicate, GymQueryOptions gymQueryOptions, CancellationToken cancellationToken = default)
+    public async Task<GymDto?> GetByNameAsync(string? name, CancellationToken cancellationToken = default)
+    {
+        return await dbContext
+            .Set<Gym>()
+            .Where(g => g.Name.Value == name)
+            .Select(g => new GymDto
+            {
+                Id = g.Id,
+                Name = g.Name.Value,
+                Description = g.Description.Value,
+                Address = new AddressDto
+                {
+                    Street = g.Address.Street,
+                    City = g.Address.City,
+                    ZipCode = g.Address.ZipCode
+                },
+                Schedule = g.Schedule.Value
+            })
+            .FirstOrDefaultAsync(cancellationToken);
+    }
+
+    public async Task<GymDto?> GetAsync(Expression<Func<Gym, bool>> predicate, GymQueryOptions gymQueryOptions, CancellationToken cancellationToken = default)
     {
         var query = dbContext.Set<Gym>().AsQueryable();
 
         if (gymQueryOptions.AsNoTracking)
             query = query.AsNoTracking();
 
-        if (gymQueryOptions.IncludeAmenities)
-            query = query.Include(g => g.GymAmenities);
-
-        if (gymQueryOptions.IncludeTrainers)
-            query = query.Include(g => g.Trainers);
-
-        if (gymQueryOptions.IncludeEquipment)
-            query = query.Include(g => g.Equipment);
-
-        if (gymQueryOptions.IncludeMemberships)
-            query = query.Include(g => g.Memberships);
-
-        if (gymQueryOptions.IncludeTrainingSessions)
-            query = query.Include(g => g.TrainingSessions);
-
-        return await query.FirstOrDefaultAsync(predicate, cancellationToken);
+        return await query
+            .Where(predicate)
+            .Select(g => new GymDto
+            {
+                Id = g.Id,
+                Name = g.Name.Value,
+                Description = g.Description.Value,
+                Address = new AddressDto
+                {
+                    Street = g.Address.Street,
+                    City = g.Address.City,
+                    ZipCode = g.Address.ZipCode
+                },
+                Schedule = g.Schedule.Value
+            })
+            .FirstOrDefaultAsync(cancellationToken);
     }
 
     public async Task<int> GetTotalCountAsync(CancellationToken cancellationToken = default)
@@ -74,16 +95,24 @@ internal sealed class GymRepository(ApplicationDbContext dbContext)
             }).ToListAsync(cancellationToken);
     }
 
-    public override async Task<Gym?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    public async Task<GymDto?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         return await dbContext
             .Set<Gym>()
-            .AsSplitQuery()
-            .Include(g => g.GymAmenities)
-            .Include(g => g.Trainers)
-            .Include(g => g.Equipment)
-            .Include(g => g.Memberships)
-            .Include(g => g.TrainingSessions)
-            .FirstOrDefaultAsync(g => g.Id == id, cancellationToken);
+            .Where(g => g.Id == id)
+            .Select(g => new GymDto
+            {
+                Id = g.Id,
+                Name = g.Name.Value,
+                Description = g.Description.Value,
+                Address = new AddressDto
+                {
+                    Street = g.Address.Street,
+                    City = g.Address.City,
+                    ZipCode = g.Address.ZipCode
+                },
+                Schedule = g.Schedule.Value
+            })
+            .FirstOrDefaultAsync(cancellationToken);
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System.Linq.Expressions;
-using GymManagement.Application.Gyms.Get;
 using GymManagement.Domain.Entities;
 using GymManagement.Domain.Entities.Gyms;
 using GymManagement.Domain.Entities.Gyms.QueryOptions;
@@ -10,7 +9,7 @@ namespace GymManagement.Infrastructure.Repositories.CachedRepositories;
 
 public class CachedGymRepository(IGymRepository gymRepository, HybridCache hybridCache) : IGymRepository
 {
-    public async Task<Gym?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    public async Task<GymDto?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         var cachedGym = await hybridCache.GetOrCreateAsync(CachedKeys.GymById(id), async token =>
         {
@@ -21,7 +20,18 @@ public class CachedGymRepository(IGymRepository gymRepository, HybridCache hybri
         return cachedGym;
     }
 
-    public async Task<Gym?> GetByNameAsync(string name, CancellationToken cancellationToken = default)
+    public async Task<Gym?> GetEntityByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        var cachedGym = await hybridCache.GetOrCreateAsync(CachedKeys.GymById(id), async token =>
+        {
+            var gym = await gymRepository.GetEntityByIdAsync(id, token);
+            return gym;
+        }, cancellationToken: cancellationToken);
+
+        return cachedGym;
+    }
+
+    public async Task<GymDto?> GetByNameAsync(string? name, CancellationToken cancellationToken = default)
     {
         var cachedGym = await hybridCache.GetOrCreateAsync(CachedKeys.GymByName(name), async token =>
         {
@@ -32,7 +42,7 @@ public class CachedGymRepository(IGymRepository gymRepository, HybridCache hybri
         return cachedGym;
     }
 
-    public async Task<Gym?> GetAsync(Expression<Func<Gym, bool>> predicate, GymQueryOptions gymQueryOptions, CancellationToken cancellationToken = default)
+    public async Task<GymDto?> GetAsync(Expression<Func<Gym, bool>> predicate, GymQueryOptions gymQueryOptions, CancellationToken cancellationToken = default)
     {        
         // Не кэширую. Вызываю напрямую из основного репозитория
         return await gymRepository.GetAsync(predicate, gymQueryOptions, cancellationToken);

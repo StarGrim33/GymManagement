@@ -32,11 +32,6 @@ namespace GymManagement.Api.Controllers.Gyms
         {
             var query = new GetGymByQueryOptionsQuery(
                 queryOptionsRequest.GymId,
-                queryOptionsRequest.DoIncludeAmenities,
-                queryOptionsRequest.DoIncludeTrainers,
-                queryOptionsRequest.DoIncludeEquipment,
-                queryOptionsRequest.DoIncludeMemberships,
-                queryOptionsRequest.DoIncludeTrainingSessions,
                 queryOptionsRequest.IsAsNoTracking);
 
             var result = await sender.Send(query, cancellationToken);

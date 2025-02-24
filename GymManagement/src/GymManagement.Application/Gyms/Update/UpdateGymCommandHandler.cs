@@ -9,7 +9,7 @@ internal sealed class UpdateGymCommandHandler(IGymRepository gymRepository, IUni
 {
     public async Task<Result<Guid>> Handle(UpdateGymCommand request, CancellationToken cancellationToken)
     {
-        var gym = await gymRepository.GetByIdAsync(request.GymId, cancellationToken);
+        var gym = await gymRepository.GetEntityByIdAsync(request.GymId, cancellationToken);
 
         if (gym is null)
         {

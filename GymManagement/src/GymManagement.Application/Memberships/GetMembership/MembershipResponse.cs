@@ -22,5 +22,5 @@ public sealed class MembershipResponse
 
     public DateTime? EndDate { get; init; }
 
-    public MembershipTypesResponse? MembershipType { get; init; }
+    public MembershipTypesResponse? MembershipType { get; set; }
 }
