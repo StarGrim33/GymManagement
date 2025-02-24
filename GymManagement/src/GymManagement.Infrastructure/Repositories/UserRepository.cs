@@ -5,7 +5,7 @@ namespace GymManagement.Infrastructure.Repositories;
 
 internal sealed class UserRepository(ApplicationDbContext dbContext) : Repository<User>(dbContext), IUserRepository
 {
-    public override async Task<User?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    public async Task<User?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         return await dbContext
             .Set<User>()

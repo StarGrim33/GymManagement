@@ -25,8 +25,8 @@ internal sealed class GetAllMembershipsHandler(IMembershipRepository repository)
         var membershipResponses = memberships.Select(m => new MembershipResponse
         {
             Id = m.Id,
-            Name = m.MembershipType.Name, 
-            PriceAmount = m.PriceAmount,
+            Name = m.MembershipType, 
+            PriceAmount = m.Price,
             StartDate = m.StartDate,
             EndDate = m.EndDate,
             IsActive = m.IsActive,
@@ -36,9 +36,9 @@ internal sealed class GetAllMembershipsHandler(IMembershipRepository repository)
             MembershipType = new MembershipTypesResponse
             {
                 Id = m.MembershipTypeId,
-                Duration = m.MembershipType.Duration,
-                Name = m.MembershipType.Name,
-                Price = m.MembershipType.Price
+                Duration = m.MembershipTypeDuration,
+                Name = m.MembershipTypeName,
+                Price = m.Price
             }
         }).ToList();
 

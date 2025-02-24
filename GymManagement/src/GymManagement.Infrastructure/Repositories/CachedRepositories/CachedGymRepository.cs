@@ -1,4 +1,5 @@
 ﻿using System.Linq.Expressions;
+using GymManagement.Domain.Entities;
 using GymManagement.Domain.Entities.Gyms;
 using GymManagement.Domain.Entities.Gyms.QueryOptions;
 using GymManagement.Infrastructure.Repositories.CacheKeys;
@@ -8,7 +9,7 @@ namespace GymManagement.Infrastructure.Repositories.CachedRepositories;
 
 public class CachedGymRepository(IGymRepository gymRepository, HybridCache hybridCache) : IGymRepository
 {
-    public async Task<Gym?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    public async Task<GymDto?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         var cachedGym = await hybridCache.GetOrCreateAsync(CachedKeys.GymById(id), async token =>
         {
@@ -19,7 +20,18 @@ public class CachedGymRepository(IGymRepository gymRepository, HybridCache hybri
         return cachedGym;
     }
 
-    public async Task<Gym?> GetByNameAsync(string name, CancellationToken cancellationToken = default)
+    public async Task<Gym?> GetEntityByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        var cachedGym = await hybridCache.GetOrCreateAsync(CachedKeys.GymById(id), async token =>
+        {
+            var gym = await gymRepository.GetEntityByIdAsync(id, token);
+            return gym;
+        }, cancellationToken: cancellationToken);
+
+        return cachedGym;
+    }
+
+    public async Task<GymDto?> GetByNameAsync(string? name, CancellationToken cancellationToken = default)
     {
         var cachedGym = await hybridCache.GetOrCreateAsync(CachedKeys.GymByName(name), async token =>
         {
@@ -30,7 +42,7 @@ public class CachedGymRepository(IGymRepository gymRepository, HybridCache hybri
         return cachedGym;
     }
 
-    public async Task<Gym?> GetAsync(Expression<Func<Gym, bool>> predicate, GymQueryOptions gymQueryOptions, CancellationToken cancellationToken = default)
+    public async Task<GymDto?> GetAsync(Expression<Func<Gym, bool>> predicate, GymQueryOptions gymQueryOptions, CancellationToken cancellationToken = default)
     {        
         // Не кэширую. Вызываю напрямую из основного репозитория
         return await gymRepository.GetAsync(predicate, gymQueryOptions, cancellationToken);
@@ -49,14 +61,26 @@ public class CachedGymRepository(IGymRepository gymRepository, HybridCache hybri
         return totalCount;
     }
 
-    public async Task<List<Gym>> GetPagedAsync(int pageNumber, int pageSize, CancellationToken cancellationToken = default)
+    public async Task<List<GymDto>> GetPagedAsync(int pageNumber, int pageSize, CancellationToken cancellationToken = default)
     {
         var cacheKey = CachedKeys.GymsPaged(pageNumber, pageSize);
 
         var cachedGyms = await hybridCache.GetOrCreateAsync(cacheKey, async token =>
         {
             var gyms = await gymRepository.GetPagedAsync(pageNumber, pageSize, token);
-            return gyms;
+            return gyms.Select(g => new GymDto
+            {
+                Id = g.Id,
+                Name = g.Name,
+                Description = g.Description,
+                Address = new AddressDto
+                {
+                    Street = g.Address.Street,
+                    City = g.Address.City,
+                    ZipCode = g.Address.ZipCode
+                },
+                Schedule = g.Schedule
+            }).ToList();
         }, cancellationToken: cancellationToken);
 
         return cachedGyms;

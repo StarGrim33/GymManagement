@@ -13,7 +13,7 @@ internal sealed class MembershipTypeRepository(ApplicationDbContext dbContext)
             .FirstOrDefaultAsync(mt => mt.Name == name, cancellationToken);
     }
 
-    public override async Task<MembershipType?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    public async Task<MembershipType?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         return await dbContext
             .Set<MembershipType>()

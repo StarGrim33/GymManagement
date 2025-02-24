@@ -3,7 +3,7 @@ using GymManagement.Domain.Abstractions;
 using GymManagement.Domain.Entities.Gyms;
 using GymManagement.Domain.Entities.Gyms.Errors;
 
-namespace GymManagement.Application.Gyms.CreateGym;
+namespace GymManagement.Application.Gyms.Create;
 
 internal sealed class CreateGymCommandHandler(IGymRepository gymRepository, IUnitOfWork unitOfWork)
     : ICommandHandler<CreateGymCommand, Guid>

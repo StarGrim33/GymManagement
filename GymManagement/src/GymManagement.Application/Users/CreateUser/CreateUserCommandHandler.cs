@@ -29,7 +29,7 @@ internal sealed class CreateUserCommandHandler(IUserRepository userRepository, I
             request.Address
         );
 
-        userRepository.Add(newUser);
+        await userRepository.AddAsync(newUser, cancellationToken);
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 

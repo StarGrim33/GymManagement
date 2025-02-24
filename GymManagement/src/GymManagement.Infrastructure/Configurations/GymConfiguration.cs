@@ -1,8 +1,6 @@
-﻿using GymManagement.Domain.Entities;
-using GymManagement.Domain.Entities.Gyms;
+﻿using GymManagement.Domain.Entities.Gyms;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace GymManagement.Infrastructure.Configurations;
 
@@ -59,22 +57,22 @@ internal sealed class GymConfiguration : IEntityTypeConfiguration<Gym>
         builder.HasMany(g => g.Trainers)
             .WithOne(t => t.Gym)
             .HasForeignKey(t => t.GymId)
-            .OnDelete(DeleteBehavior.Restrict);
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasMany(g => g.Equipment)
             .WithOne(e => e.Gym)
             .HasForeignKey(e => e.GymId)
-            .OnDelete(DeleteBehavior.Restrict);
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasMany(g => g.Memberships)
             .WithOne(m => m.Gym)
             .HasForeignKey(m => m.GymId)
-            .OnDelete(DeleteBehavior.Restrict);
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasMany(g => g.TrainingSessions)
             .WithOne(ts => ts.Gym)
             .HasForeignKey(ts => ts.GymId)
-            .OnDelete(DeleteBehavior.Restrict);
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasMany(g => g.GymAmenities)
             .WithOne(ga => ga.Gym)

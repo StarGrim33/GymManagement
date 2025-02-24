@@ -6,7 +6,7 @@ namespace GymManagement.Infrastructure.Repositories.CachedRepositories;
 
 public class CachedMembershipRepository(IMembershipRepository membershipRepository, HybridCache hybridCache) : IMembershipRepository
 {
-    public async Task<Membership?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    public async Task<MembershipDto?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         var cacheKey = CachedKeys.MembershipById(id);
 
@@ -32,7 +32,7 @@ public class CachedMembershipRepository(IMembershipRepository membershipReposito
         return totalCount;
     }
 
-    public async Task<List<Membership>> GetPagedAsync(int pageNumber, int pageSize, CancellationToken cancellationToken = default)
+    public async Task<List<MembershipDto>> GetPagedAsync(int pageNumber, int pageSize, CancellationToken cancellationToken = default)
     {
         var cacheKey = $"{CachedKeys.MembershipsPaged(pageNumber, pageSize)}";
 

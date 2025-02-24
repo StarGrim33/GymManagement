@@ -4,5 +4,9 @@ public interface IInvoiceRepository
 {
     Task<Invoice?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
 
-    void Add(Invoice invoice);
+    Task AddAsync(Invoice invoice, CancellationToken cancellationToken = default);
+
+    Task Update(Invoice invoice);
+
+    Task Delete(Invoice invoice);
 }

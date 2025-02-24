@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using GymManagement.Application.Gyms.CreateGym.Validators;
+using GymManagement.Application.Gyms.Create.Validators;
 
 namespace GymManagement.Application.Users.CreateUser;
 

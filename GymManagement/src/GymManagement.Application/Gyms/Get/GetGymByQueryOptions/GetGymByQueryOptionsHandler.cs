@@ -1,9 +1,10 @@
 ﻿using GymManagement.Application.Abstractions.Messaging;
 using GymManagement.Domain.Abstractions;
+using GymManagement.Domain.Entities;
 using GymManagement.Domain.Entities.Gyms;
 using GymManagement.Domain.Entities.Gyms.QueryOptions;
 
-namespace GymManagement.Application.Gyms.GetGym.GetGymByQueryOptions;
+namespace GymManagement.Application.Gyms.Get.GetGymByQueryOptions;
 
 internal sealed class GetGymByQueryOptionsHandler(IGymRepository repository)
     : IQueryHandler<GetGymByQueryOptionsQuery, GymResponse>
@@ -12,12 +13,7 @@ internal sealed class GetGymByQueryOptionsHandler(IGymRepository repository)
     {
         var queryOptions = new GymQueryOptions
         {
-            IncludeMemberships = request.DoIncludeMemberships,
             AsNoTracking = request.IsAsNoTracking,
-            IncludeAmenities = request.DoIncludeAmenities,
-            IncludeEquipment = request.DoIncludeEquipment,
-            IncludeTrainers = request.DoIncludeTrainers,
-            IncludeTrainingSessions = request.DoIncludeTrainingSessions
         };
 
         var gym = await repository.GetAsync(x => x.Id == request.GymId, queryOptions, cancellationToken);
@@ -30,10 +26,10 @@ internal sealed class GetGymByQueryOptionsHandler(IGymRepository repository)
         var gymResponse = new GymResponse
         {
             Id = gym.Id,
-            Name = gym.Name,
-            Description = gym.Description,
-            Address = gym.Address,
-            Schedule = gym.Schedule,
+            Name = new Name(gym.Name),
+            Description = new Description(gym.Description),
+            Address = new Address(gym.Address.Street, gym.Address.City, gym.Address.ZipCode),
+            Schedule = new Schedule(gym.Schedule),
             GymAmenities = gym.GymAmenities.ToList(),
             Trainers = gym.Trainers.ToList(),
             Equipment = gym.Equipment.ToList(),

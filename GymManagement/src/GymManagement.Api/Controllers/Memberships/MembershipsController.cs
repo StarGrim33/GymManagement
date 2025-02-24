@@ -10,7 +10,7 @@ namespace GymManagement.Api.Controllers.Memberships
     [Route("api/memberships")]
     public class MembershipsController(ISender sender) : ControllerBase
     {
-        [HttpGet]
+        [HttpGet("{gymId:guid}")]
         public async Task<IActionResult> GetMembership(
             Guid membershipId, 
             CancellationToken cancellationToken)

@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace GymManagement.Application.Gyms.GetGym;
+namespace GymManagement.Application.Gyms.Get;
 
 public class GetGymQueryValidator : AbstractValidator<GetGymQuery>
 {

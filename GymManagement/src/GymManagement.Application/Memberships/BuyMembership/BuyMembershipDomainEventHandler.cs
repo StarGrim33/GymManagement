@@ -40,7 +40,5 @@ internal sealed class BuyMembershipDomainEventHandler
             user.Email,
             subjectMessage,
             bodyMessage);
-
-        throw new NotImplementedException();
     }
 }

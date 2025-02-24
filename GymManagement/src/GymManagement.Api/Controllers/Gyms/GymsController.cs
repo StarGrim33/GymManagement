@@ -1,7 +1,9 @@
-﻿using GymManagement.Application.Gyms.CreateGym;
-using GymManagement.Application.Gyms.GetGym;
-using GymManagement.Application.Gyms.GetGym.GetAll;
-using GymManagement.Application.Gyms.GetGym.GetGymByQueryOptions;
+﻿using GymManagement.Application.Gyms.Create;
+using GymManagement.Application.Gyms.Delete;
+using GymManagement.Application.Gyms.Get;
+using GymManagement.Application.Gyms.Get.GetAll;
+using GymManagement.Application.Gyms.Get.GetGymByQueryOptions;
+using GymManagement.Application.Gyms.Update;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -30,11 +32,6 @@ namespace GymManagement.Api.Controllers.Gyms
         {
             var query = new GetGymByQueryOptionsQuery(
                 queryOptionsRequest.GymId,
-                queryOptionsRequest.DoIncludeAmenities,
-                queryOptionsRequest.DoIncludeTrainers,
-                queryOptionsRequest.DoIncludeEquipment,
-                queryOptionsRequest.DoIncludeMemberships,
-                queryOptionsRequest.DoIncludeTrainingSessions,
                 queryOptionsRequest.IsAsNoTracking);
 
             var result = await sender.Send(query, cancellationToken);
@@ -42,7 +39,7 @@ namespace GymManagement.Api.Controllers.Gyms
             return Ok(result.Value);
         }
 
-        [HttpGet("all-gyms")]
+        [HttpGet("all")]
         public async Task<IActionResult> GetAllGyms(
             [FromQuery] int pageNumber = 1,
             [FromQuery] int pageSize = 10, 
@@ -55,10 +52,42 @@ namespace GymManagement.Api.Controllers.Gyms
             return Ok(result.Value);
         }
 
-        [HttpPost]
+        [HttpPost("create")]
         public async Task<IActionResult> CreateGym([FromBody]CreateGymRequest request, CancellationToken cancellationToken)
         {
             var command = new CreateGymCommand(request.Name, request.Description, request.Address, request.Schedule);
+
+            var result = await sender.Send(command, cancellationToken);
+
+            if (result.IsFailure)
+            {
+                return BadRequest(result.Error);
+            }
+
+            return CreatedAtAction(nameof(GetGym),
+                new { id = result.Value }, result.Value);
+        }
+
+        [HttpDelete("{gymId:guid}")]
+        public async Task<IActionResult> DeleteGym(Guid gymId, CancellationToken cancellationToken)
+        {
+            var command = new DeleteGymCommand(gymId);
+
+            var result = await sender.Send(command, cancellationToken);
+
+            if (result.IsFailure)
+            {
+                return BadRequest(result.Error);
+            }
+
+            return NoContent();
+        }
+
+        [HttpPut("update")]
+        public async Task<IActionResult> UpdateGym([FromBody] UpdateGymRequest request,
+            CancellationToken cancellationToken)
+        {
+            var command = new UpdateGymCommand(request.GymId, request.Name, request.Description, request.Address, request.Schedule);
 
             var result = await sender.Send(command, cancellationToken);
 
