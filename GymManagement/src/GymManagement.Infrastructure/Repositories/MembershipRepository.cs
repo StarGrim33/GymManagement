@@ -24,7 +24,8 @@ internal sealed class MembershipRepository(ApplicationDbContext dbContext)
                 GymId = m.GymId,
                 MembershipTypeDuration = m.MembershipType.Duration,
                 MembershipTypeName = m.MembershipType.Name,
-                UserId = m.UserId
+                UserId = m.UserId,
+                Invoices = m.Invoices
             })
             .FirstOrDefaultAsync(cancellationToken);
     }

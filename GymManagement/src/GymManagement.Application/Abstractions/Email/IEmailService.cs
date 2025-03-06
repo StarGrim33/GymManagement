@@ -2,7 +2,7 @@
 
 public interface IEmailService
 {
-    Task SendAsync(Domain.Entities.Email recipient, string subject, string body);
+    Task SendAsync(string recipient, string subject, string body);
 
     //ToDo: Сделать реальный email сервис
 }

@@ -1,4 +1,6 @@
-﻿namespace GymManagement.Domain.Entities.Memberships;
+﻿using GymManagement.Domain.Entities.Invoices;
+
+namespace GymManagement.Domain.Entities.Memberships;
 
 public class MembershipDto
 {
@@ -25,4 +27,6 @@ public class MembershipDto
     public bool IsActive { get; init; }
 
     public MembershipStatus MembershipStatus { get; init; }
+
+    public List<Invoice>? Invoices { get; init; }
 }

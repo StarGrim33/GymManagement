@@ -1,12 +1,15 @@
-﻿using GymManagement.Application.Users.CreateUser;
+﻿using GymManagement.Application.Loging;
+using GymManagement.Application.Users.CreateUser;
 using GymManagement.Application.Users.GetUser;
 using GymManagement.Application.Users.GetUser.GetAllUsers;
 using GymManagement.Domain.Entities;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GymManagement.Api.Controllers.Users
 {
+    [Authorize]
     [ApiController]
     [Route("api/users")]
     public class UserController(ISender sender) : Controller
@@ -46,7 +49,8 @@ namespace GymManagement.Api.Controllers.Users
             return Ok(result.Value);
         }
 
-        [HttpPost]
+        [AllowAnonymous]
+        [HttpPost("create-user")]
         public async Task<IActionResult> CreateUser(
             [FromBody] CreateUserRequest request,
             CancellationToken cancellationToken)
@@ -69,6 +73,25 @@ namespace GymManagement.Api.Controllers.Users
 
             return CreatedAtAction(nameof(GetUser),
                 new { id = result.Value }, result.Value);
+        }
+
+
+        [AllowAnonymous]
+        [HttpPost("login")]
+        public async Task<IActionResult> LogIn(
+            LogInUserRequest request,
+            CancellationToken cancellationToken)
+        {
+            var command = new LogInUserCommand(request.Email, request.Password);
+
+            var result = await sender.Send(command, cancellationToken);
+
+            if (result.IsFailure)
+            {
+                return Unauthorized(result.Error);
+            }
+
+            return Ok(result.Value);
         }
     }
 }

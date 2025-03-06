@@ -1,4 +1,5 @@
 ﻿using GymManagement.Domain.Abstractions;
+using System.Text.Json.Serialization;
 
 namespace GymManagement.Domain.Entities.Memberships.MembershipTypes;
 
@@ -16,10 +17,9 @@ public class MembershipType : Entity
         Price = price;
     }
 
-    private MembershipType()
+    public MembershipType()
     {
     }
-
 
     public string Name { get; private set; }
 
@@ -27,6 +27,7 @@ public class MembershipType : Entity
 
     public decimal Price { get; private set; }
 
+    [JsonIgnore]
     public List<Membership> Memberships { get; private set; } = [];
 
     public static MembershipType Create(string name,

@@ -8,18 +8,11 @@ public static class ApplicationBuilderExtensions
 {
     public static void ApplyMigrations(this IApplicationBuilder app)
     {
-        try
-        {
-            using var scope = app.ApplicationServices.CreateScope();
+        using var scope = app.ApplicationServices.CreateScope();
 
-            using var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        using var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
-            dbContext.Database.Migrate();
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-        }
+        dbContext.Database.Migrate();
     }
 
     public static void UseCustomExceptionHandler(this IApplicationBuilder app)

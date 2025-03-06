@@ -1,4 +1,5 @@
-﻿using GymManagement.Domain.Entities.Trainers;
+﻿using GymManagement.Domain.Abstractions;
+using GymManagement.Domain.Entities.Trainers;
 using GymManagement.Domain.Entities.Users;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -53,7 +54,9 @@ internal sealed class UserConfiguration : IEntityTypeConfiguration<User>
                 v => new Domain.Entities.Email(v))
             .HasColumnName("email")
             .HasMaxLength(100)
-            .IsRequired();
+        .IsRequired();
+
+        builder.Property(u => u.IdentityId).HasColumnName("identity_id");
 
         builder.OwnsOne(u => u.Address, a =>
         {
@@ -93,6 +96,8 @@ internal sealed class UserConfiguration : IEntityTypeConfiguration<User>
                     .HasForeignKey("UserId")
                     .OnDelete(DeleteBehavior.Cascade)
             );
+
+        builder.HasIndex(u => u.IdentityId).IsUnique();
 
         builder.HasIndex(u => u.Email).IsUnique();
     }

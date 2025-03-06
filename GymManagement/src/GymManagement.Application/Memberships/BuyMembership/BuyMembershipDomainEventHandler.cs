@@ -37,7 +37,7 @@ internal sealed class BuyMembershipDomainEventHandler
         if (user is null) return;
 
         await _emailService.SendAsync(
-            user.Email,
+            user.Email.Value,
             subjectMessage,
             bodyMessage);
     }

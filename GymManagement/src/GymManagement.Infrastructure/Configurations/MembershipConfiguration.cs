@@ -55,7 +55,7 @@ internal sealed class MembershipConfiguration : IEntityTypeConfiguration<Members
         builder.HasMany(m => m.Invoices)
             .WithOne(i => i.Membership)
             .HasForeignKey(i => i.MembershipId)
-            .OnDelete(DeleteBehavior.Restrict);
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder.Property<uint>("Version").IsRowVersion();
     }

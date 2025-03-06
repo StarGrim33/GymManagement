@@ -10,7 +10,7 @@ namespace GymManagement.Api.Controllers.Memberships
     [Route("api/memberships")]
     public class MembershipsController(ISender sender) : ControllerBase
     {
-        [HttpGet("{gymId:guid}")]
+        [HttpGet("{membershipId:guid}")]
         public async Task<IActionResult> GetMembership(
             Guid membershipId, 
             CancellationToken cancellationToken)
@@ -45,7 +45,7 @@ namespace GymManagement.Api.Controllers.Memberships
             }
 
             return CreatedAtAction(nameof(GetMembership), 
-                new { id = result.Value }, result.Value);
+                new { membershipId = result.Value }, result.Value);
         }
 
         [HttpGet("all-memberships")]

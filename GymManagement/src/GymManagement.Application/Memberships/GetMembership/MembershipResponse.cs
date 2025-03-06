@@ -23,4 +23,6 @@ public sealed class MembershipResponse
     public DateTime? EndDate { get; init; }
 
     public MembershipTypesResponse? MembershipType { get; set; }
+
+    public List<Domain.Entities.Invoices.Invoice>? Invoices { get; init; } = [];
 }

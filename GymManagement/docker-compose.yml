@@ -19,3 +19,17 @@ services:
       - ./.containers/database:/var/lib/postgresql/data
     ports:
       - 5432:5432
+
+  gym-management-idp:
+    image: quay.io/keycloak/keycloak
+    container_name: Gym-Management-Idp
+    command: start-dev --import-realm
+    environment:
+      - KC_BOOTSTRAP_ADMIN_USERNAME=admin
+      - KC_BOOTSTRAP_ADMIN_PASSWORD=admin
+      - KEYCLOAK_IMPORT=/tmp/bookify-realm-export.json
+    volumes:
+      - ./.containers/idp:/opt/keycloak/keycloak/standalone/data
+      - ./.files/bookify-realm-export.json:/opt/keycloak/data/import/bookify-realm-export.json
+    ports:
+      - 18080:8080

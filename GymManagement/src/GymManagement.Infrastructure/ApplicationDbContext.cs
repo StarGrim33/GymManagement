@@ -2,17 +2,20 @@
 using GymManagement.Domain.Abstractions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace GymManagement.Infrastructure;
 
 public class ApplicationDbContext : DbContext, IUnitOfWork
 {
     private readonly IPublisher _publisher;
+    private readonly ILogger<ApplicationDbContext> _logger;
 
-    public ApplicationDbContext(DbContextOptions options, IPublisher publisher) 
+    public ApplicationDbContext(DbContextOptions options, IPublisher publisher, ILogger<ApplicationDbContext> logger) 
         : base(options)
     {
         _publisher = publisher;
+        _logger = logger;
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -55,7 +58,15 @@ public class ApplicationDbContext : DbContext, IUnitOfWork
 
         foreach (var domainEvent in domainEvents)
         {
-            await _publisher.Publish(domainEvent);
+            try
+            {
+                _logger.LogInformation("Publishing domain event: {EventName}", domainEvent.GetType().Name);
+                await _publisher.Publish(domainEvent);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to publish domain event: {EventName}", domainEvent.GetType().Name);
+            }
         }
     }
 }

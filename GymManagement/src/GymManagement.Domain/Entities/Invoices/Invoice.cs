@@ -1,5 +1,7 @@
 ﻿using GymManagement.Domain.Abstractions;
+using GymManagement.Domain.Entities.Invoices.Events;
 using GymManagement.Domain.Entities.Memberships;
+using GymManagement.Domain.Entities.Memberships.Errors;
 
 namespace GymManagement.Domain.Entities.Invoices;
 
@@ -56,11 +58,16 @@ public sealed class Invoice : Entity
             membership.Id);
     }
 
-    public void MarkAsPaid(DateTime paymentDate)
+    public Result MarkAsPaid(DateTime paymentDate)
     {
+        if (PaymentStatus is not PaymentStatus.Paid)
+            return Result.Failure(MembershipErrors.NotActivated);
+
         PaymentStatus = PaymentStatus.Paid;
         PaymentDate = paymentDate;
 
         Membership.MarkAsPaid();
+        RaiseDomainEvent(new InvoicePaidDomainEvent(Id));
+        return Result.Success();
     }
 }

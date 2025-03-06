@@ -32,7 +32,7 @@ internal sealed class InvoiceConfiguration : IEntityTypeConfiguration<Invoice>
         builder.HasOne(i => i.Membership)
             .WithMany(m => m.Invoices)
             .HasForeignKey(i => i.MembershipId)
-            .OnDelete(DeleteBehavior.Restrict)
+            .OnDelete(DeleteBehavior.Cascade)
             .IsRequired();
     }
 }

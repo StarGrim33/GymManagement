@@ -1,14 +1,20 @@
-﻿using GymManagement.Application.Abstractions.Messaging;
+﻿using GymManagement.Application.Abstractions.Authentication;
+using GymManagement.Application.Abstractions.Messaging;
 using GymManagement.Domain.Abstractions;
 using GymManagement.Domain.Entities.Users;
 using GymManagement.Domain.Entities.Users.Errors;
+using System.Security.Cryptography;
 
 namespace GymManagement.Application.Users.CreateUser;
 
-internal sealed class CreateUserCommandHandler(IUserRepository userRepository, IUnitOfWork unitOfWork)
+internal sealed class CreateUserCommandHandler(
+    IUserRepository userRepository, 
+    IUnitOfWork unitOfWork,
+    IAuthenticationService authenticationService)
     : ICommandHandler<CreateUserCommand, Guid>
 {
-    public async Task<Result<Guid>> Handle(CreateUserCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Guid>> Handle(CreateUserCommand request, 
+        CancellationToken cancellationToken)
     {
         var normalizedEmail = NormalizeEmail(request.Email.Value);
         var existingUser = await userRepository.GetByEmailAsync(normalizedEmail, cancellationToken);
@@ -29,25 +35,61 @@ internal sealed class CreateUserCommandHandler(IUserRepository userRepository, I
             request.Address
         );
 
-        await userRepository.AddAsync(newUser, cancellationToken);
+        var securePassword = GenerateSecurePassword();
 
-        await unitOfWork.SaveChangesAsync(cancellationToken);
+        newUser.SetPassword(securePassword);
 
-        return Result.Success(newUser.Id);
+        try
+        {
+            var identityId = await authenticationService.RegisterAsync(
+                newUser,
+                securePassword,
+                cancellationToken);
+
+            newUser.SetIdentityId(identityId);
+
+            await userRepository.AddAsync(newUser, cancellationToken);
+
+            await unitOfWork.SaveChangesAsync(cancellationToken);
+
+            return Result.Success(newUser.Id);
+        }
+        catch (Exception)
+        {
+            return Result.Failure<Guid>(UserErrors.InternalServerError);
+        }
     }
 
     private static string NormalizeEmail(string emailValue)
     {
-        var parts = emailValue.Split('@');
-
-        if (parts.Length != 2)
+        var match = System.Text.RegularExpressions.Regex.Match(emailValue, @"^(?<name>[^@]+)@(?<domain>.+)$");
+        
+        if (!match.Success)
             return emailValue;
 
-        var name = parts[0].Replace(".", "");
+        var name = match.Groups["name"].Value.Replace(".", "");
+        var plusIndex = name.IndexOf('+');
 
-        if (name.IndexOf('+') > 0)
-            name = name[..name.IndexOf('+')];
+        if (plusIndex > 0)
+            name = name[..plusIndex];
 
-        return name + '@' + parts[1];
+        return $"{name}@{match.Groups["domain"].Value}";
+    }
+
+    private static string GenerateSecurePassword(int length = 12)
+    {
+        const string validChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*()_+";
+        var random = new byte[length];
+        using var rng = RandomNumberGenerator.Create();
+        rng.GetBytes(random);
+
+        var chars = new char[length];
+
+        for (var i = 0; i < length; i++)
+        {
+            chars[i] = validChars[random[i] % validChars.Length];
+        }
+
+        return new string(chars);
     }
 }

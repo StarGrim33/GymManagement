@@ -34,7 +34,8 @@ internal sealed class GetMembershipQueryHandler(IMembershipRepository membership
             {
                 Id = membershipDto.MembershipTypeId,
                 Name = membershipDto.MembershipType
-            }
+            },
+            Invoices = membershipDto.Invoices
         });
     }
 }

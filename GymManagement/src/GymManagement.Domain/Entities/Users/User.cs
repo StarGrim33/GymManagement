@@ -52,7 +52,11 @@ public sealed class User : Entity
 
     public bool IsActive { get; private set; }
 
+    public string IdentityId { get; private set; } = string.Empty;
+
     public List<TrainingSession> TrainingSessions { get; private set; } = [];
+
+    public string PasswordHash { get; private set; } = string.Empty;
 
     public static User Create(
         FirstName firstName, 
@@ -91,5 +95,24 @@ public sealed class User : Entity
     {
         return Memberships
             .FirstOrDefault(m => m.Gym == gym && m.IsActive && m.EndDate > DateTime.UtcNow);
+    }
+
+    public void SetIdentityId(string identityId)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(identityId);
+
+        IdentityId = identityId;
+    }
+
+    public void SetPassword(string password)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(password);
+
+        PasswordHash = HashPassword(password);
+    }
+
+    private static string HashPassword(string password)
+    {
+        return BCrypt.Net.BCrypt.HashPassword(password, BCrypt.Net.BCrypt.GenerateSalt());
     }
 }
