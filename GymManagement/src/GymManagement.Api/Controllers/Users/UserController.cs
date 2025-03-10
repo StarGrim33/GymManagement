@@ -55,9 +55,11 @@ namespace GymManagement.Api.Controllers.Users
             [FromBody] CreateUserRequest request,
             CancellationToken cancellationToken)
         {
-            var command = new CreateUserCommand(request.FirstName, 
+            var command = new CreateUserCommand(
+                request.FirstName, 
                 request.LastName, 
                 request.Email,
+                request.Password,
                 request.PhoneNumber,
                 request.DateOfBirth, 
                 request.IsActive,

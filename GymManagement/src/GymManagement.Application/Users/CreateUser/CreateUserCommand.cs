@@ -8,6 +8,7 @@ public record CreateUserCommand(
     FirstName FirstName,
     LastName LastName,
     Email Email,
+    string Password,
     string PhoneNumber,
     DateTime DateOfBirth,
     bool IsActive,

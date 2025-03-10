@@ -35,15 +35,15 @@ internal sealed class CreateUserCommandHandler(
             request.Address
         );
 
-        var securePassword = GenerateSecurePassword();
+        //var securePassword = GenerateSecurePassword(); Другая реализация пароля через случайную генерацию значения.
 
-        newUser.SetPassword(securePassword);
+        newUser.SetPassword(request.Password);
 
         try
         {
             var identityId = await authenticationService.RegisterAsync(
                 newUser,
-                securePassword,
+                request.Password,
                 cancellationToken);
 
             newUser.SetIdentityId(identityId);
@@ -62,7 +62,7 @@ internal sealed class CreateUserCommandHandler(
 
     private static string NormalizeEmail(string emailValue)
     {
-        var match = System.Text.RegularExpressions.Regex.Match(emailValue, @"^(?<name>[^@]+)@(?<domain>.+)$");
+        var match = System.Text.RegularExpressions.Regex.Match(emailValue, "^(?<name>[^@]+)@(?<domain>.+)$");
         
         if (!match.Success)
             return emailValue;
