@@ -10,15 +10,20 @@ using GymManagement.Domain.Entities.Memberships.MembershipTypes;
 using GymManagement.Domain.Entities.Trainers;
 using GymManagement.Domain.Entities.Users;
 using GymManagement.Infrastructure.Authentication;
+using GymManagement.Infrastructure.Authorization;
 using GymManagement.Infrastructure.Data;
 using GymManagement.Infrastructure.Email;
 using GymManagement.Infrastructure.Repositories;
 using GymManagement.Infrastructure.Repositories.CachedRepositories;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using AuthenticationOptions = GymManagement.Infrastructure.Authentication.AuthenticationOptions;
+using AuthenticationService = GymManagement.Infrastructure.Authentication.AuthenticationService;
+using IAuthenticationService = GymManagement.Application.Abstractions.Authentication.IAuthenticationService;
 
 namespace GymManagement.Infrastructure;
 
@@ -34,6 +39,8 @@ public static class DependencyInjection
         AddPersistence(services, configuration);
 
         AddAuthentication(services, configuration);
+
+        AddAuthorization(services);
 
         return services;
     }
@@ -64,6 +71,10 @@ public static class DependencyInjection
 
             httpClient.BaseAddress = new Uri(keycloakOptions.TokenUrl);
         });
+
+        services.AddHttpContextAccessor();
+
+        services.AddScoped<IUserContext, UserContext>();
     }
 
     private static void AddPersistence(IServiceCollection services, IConfiguration configuration)
@@ -107,5 +118,12 @@ public static class DependencyInjection
         services.AddSingleton<ISqlConnectionFactory>(_ => new SqlConnectionFactory(connectionString));
 
         SqlMapper.AddTypeHandler(new DateOnlyTypeHandler());
+    }
+
+    private static void AddAuthorization(IServiceCollection services)
+    {
+        services.AddScoped<AuthorizationService>();
+
+        services.AddTransient<IClaimsTransformation, CustomClaimsTransformation>();
     }
 }

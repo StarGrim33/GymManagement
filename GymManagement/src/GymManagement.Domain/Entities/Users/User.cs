@@ -8,6 +8,8 @@ namespace GymManagement.Domain.Entities.Users;
 
 public sealed class User : Entity
 {
+    private readonly List<Role> _roles = [];
+
     private User(
         Guid id,
         FirstName firstName,
@@ -16,7 +18,7 @@ public sealed class User : Entity
         string phoneNumber,
         DateTime dateOfBirth,
         bool isActive,
-        Roles role, 
+        Role role, 
         Address address)
         : base(id)
     {
@@ -36,7 +38,7 @@ public sealed class User : Entity
 
     public List<Membership> Memberships { get; private set; } = [];
 
-    public Roles Role { get; private set; }
+    public Role Role { get; private set; }
 
     public Address Address { get; private set; }
 
@@ -58,6 +60,8 @@ public sealed class User : Entity
 
     public string PasswordHash { get; private set; } = string.Empty;
 
+    public IReadOnlyCollection<Role> Roles => _roles.AsReadOnly();
+
     public static User Create(
         FirstName firstName, 
         LastName lastName, 
@@ -65,7 +69,7 @@ public sealed class User : Entity
         string phoneNumber, 
         DateTime dateOfBirth, 
         bool isActive, 
-        Roles role,
+        Role role,
         Address address)
     {
         var user = new User(
@@ -80,6 +84,8 @@ public sealed class User : Entity
             address);
 
         user.RaiseDomainEvent(new UserCreatedDomainEvent(user.Id));
+
+        user._roles.Add(role);
 
         return user;
     }

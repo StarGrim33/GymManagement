@@ -8,8 +8,9 @@ public record CreateUserCommand(
     FirstName FirstName,
     LastName LastName,
     Email Email,
+    string Password,
     string PhoneNumber,
     DateTime DateOfBirth,
     bool IsActive,
-    Roles Role,
+    Role Role,
     Address Address) : ICommand<Guid>;
