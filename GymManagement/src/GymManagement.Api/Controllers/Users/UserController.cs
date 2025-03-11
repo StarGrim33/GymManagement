@@ -1,5 +1,6 @@
 ﻿using GymManagement.Application.Loging;
 using GymManagement.Application.Users.CreateUser;
+using GymManagement.Application.Users.GetLoggedInUser;
 using GymManagement.Application.Users.GetUser;
 using GymManagement.Application.Users.GetUser.GetAllUsers;
 using GymManagement.Domain.Entities;
@@ -77,6 +78,17 @@ namespace GymManagement.Api.Controllers.Users
                 new { id = result.Value }, result.Value);
         }
 
+        [HttpGet("me")]
+        [Authorize(Roles = RolesConstants.Registered)]
+        [Authorize(Policy = "users:read")]
+        public async Task<IActionResult> GetLoggedInUser(CancellationToken cancellationToken)
+        {
+            var query = new GetLoggedInUserQuery();
+
+            var result = await sender.Send(query, cancellationToken);
+
+            return Ok(result.Value);
+        }
 
         [AllowAnonymous]
         [HttpPost("login")]

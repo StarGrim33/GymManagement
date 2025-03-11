@@ -24,5 +24,6 @@
     <Folder Include="Database\" />
     <Folder Include="Email\" />
     <Folder Include="Repositories\CacheKeys\" />
+    <Folder Include="Authorization\" />
   </ItemGroup>
 </Project>

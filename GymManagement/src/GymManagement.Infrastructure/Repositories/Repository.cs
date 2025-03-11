@@ -1,5 +1,4 @@
 ﻿using GymManagement.Domain.Abstractions;
-using Microsoft.EntityFrameworkCore;
 
 namespace GymManagement.Infrastructure.Repositories;
 

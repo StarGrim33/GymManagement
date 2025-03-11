@@ -35,4 +35,14 @@ internal sealed class UserRepository(ApplicationDbContext dbContext) : Repositor
             .Take(pageSize)
             .ToListAsync(cancellationToken);
     }
+
+    public override async Task AddAsync(User entity, CancellationToken cancellationToken = default)
+    {
+        foreach (var role in entity.Roles)
+        {
+            dbContext.Attach(role);
+        }
+
+        await dbContext.Set<User>().AddAsync(entity, cancellationToken);
+    }
 }

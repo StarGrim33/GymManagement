@@ -10,5 +10,5 @@ public record CreateUserRequest(FirstName FirstName,
     string PhoneNumber,
     DateTime DateOfBirth,
     bool IsActive,
-    Roles Role,
+    Role Role,
     Address Address);

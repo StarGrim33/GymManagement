@@ -11,7 +11,7 @@ public sealed class UserResponse
 
     public List<Membership> Memberships { get; init; } = [];
 
-    public Roles Role { get; init; }
+    public Role Role { get; init; }
 
     public Address? Address { get; init; }
 

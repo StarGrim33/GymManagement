@@ -12,5 +12,5 @@ public record CreateUserCommand(
     string PhoneNumber,
     DateTime DateOfBirth,
     bool IsActive,
-    Roles Role,
+    Role Role,
     Address Address) : ICommand<Guid>;
