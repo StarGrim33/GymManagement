@@ -1,6 +1,7 @@
 using GymManagement.Api.Extensions;
 using GymManagement.Application;
 using GymManagement.Infrastructure;
+using Serilog;
 
 namespace GymManagement.Api
 {
@@ -9,6 +10,11 @@ namespace GymManagement.Api
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            builder.Host.UseSerilog((context, configuration) =>
+            {
+                configuration.ReadFrom.Configuration(context.Configuration);
+            });
 
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
@@ -30,6 +36,10 @@ namespace GymManagement.Api
             }
 
             app.UseHttpsRedirection();
+
+            app.UseRequestContextMiddleware();
+
+            app.UseSerilogRequestLogging();
 
             app.UseCustomExceptionHandler();
 

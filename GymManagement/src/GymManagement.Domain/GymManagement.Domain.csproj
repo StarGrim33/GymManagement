@@ -5,8 +5,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
-    <PackageReference Include="MediatR.Contracts" Version="2.0.1" />
+    <PackageReference Include="BCrypt.Net-Next" />
+    <PackageReference Include="MediatR.Contracts" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Entities\Gyms\Errors\" />

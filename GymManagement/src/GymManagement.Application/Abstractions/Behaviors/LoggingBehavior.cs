@@ -1,22 +1,18 @@
-﻿using GymManagement.Application.Abstractions.Messaging;
+﻿using GymManagement.Domain.Abstractions;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using Serilog.Context;
 
 namespace GymManagement.Application.Abstractions.Behaviors;
 
 public class LoggingBehavior<TRequest, TResponse>
+    (ILogger<LoggingBehavior<TRequest, TResponse>> logger)
     : IPipelineBehavior<TRequest, TResponse>
-    where TRequest : IBaseCommand
+    where TRequest : IBaseRequest
+    where TResponse : Result
 {
-    private readonly ILogger<TRequest> _logger;
-
-    public LoggingBehavior(ILogger<TRequest> logger)
-    {
-        _logger = logger;
-    }
-
     public async Task<TResponse> Handle(
-        TRequest request, 
+        TRequest request,
         RequestHandlerDelegate<TResponse> next,
         CancellationToken cancellationToken)
     {
@@ -24,17 +20,27 @@ public class LoggingBehavior<TRequest, TResponse>
 
         try
         {
-            _logger.LogInformation("Executing command {Command}", name);
+            logger.LogInformation("Executing request {Command}", name);
 
             var result = await next();
 
-            _logger.LogInformation("Command {Command} processed successfully", name);
+            if (result.IsSuccess)
+            {
+                logger.LogInformation("Request {Command} processed successfully", name);
+            }            
+            else
+            {
+                using (LogContext.PushProperty("Error", result.Error, true))
+                {
+                    logger.LogError("Request {Command} processing failed with {Error}", name, result.Error);
+                }
+            }
 
             return result;
         }
         catch (Exception exception)
         {
-            _logger.LogError(exception, "Command {Command} processing failed", name);
+            logger.LogError(exception, "Request {Command} processing failed", name);
 
             throw;
         }
