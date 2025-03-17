@@ -1,4 +1,5 @@
-﻿using GymManagement.Application.Loging;
+﻿using Asp.Versioning;
+using GymManagement.Application.Loging;
 using GymManagement.Application.Users.CreateUser;
 using GymManagement.Application.Users.GetLoggedInUser;
 using GymManagement.Application.Users.GetUser;
@@ -12,7 +13,8 @@ namespace GymManagement.Api.Controllers.Users
 {
     [Authorize]
     [ApiController]
-    [Route("api/users")]
+    [ApiVersion(1)]
+    [Route("api/v{version:apiVersion}/users")]
     public class UserController(ISender sender) : Controller
     {
         [HttpGet]
@@ -33,6 +35,7 @@ namespace GymManagement.Api.Controllers.Users
         }
 
         [HttpGet("all-users")]
+
         public async Task<IActionResult> GetAllUsers(
         [FromQuery] int pageNumber = 1,
         [FromQuery] int pageSize = 10,

@@ -11,7 +11,7 @@ public class GymDto
 
     public string? Description { get; init; }
 
-    public AddressDto? Address { get; init; }
+    public AddressDto Address { get; init; }
 
     public string? Schedule { get; init; }
 

@@ -1,4 +1,5 @@
-﻿using GymManagement.Application.Gyms.Create;
+﻿using Asp.Versioning;
+using GymManagement.Application.Gyms.Create;
 using GymManagement.Application.Gyms.Delete;
 using GymManagement.Application.Gyms.Get;
 using GymManagement.Application.Gyms.Get.GetAll;
@@ -10,7 +11,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace GymManagement.Api.Controllers.Gyms
 {
     [ApiController]
-    [Route("api/gyms")]
+    [ApiVersion(1)]
+    [Route("api/v{version:apiVersion}/gyms")]
     public class GymsController(ISender sender) : Controller
     {
         [HttpGet("{gymId:guid}")]
