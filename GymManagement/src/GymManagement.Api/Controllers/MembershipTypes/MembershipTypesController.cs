@@ -1,4 +1,5 @@
-﻿using GymManagement.Application.MembershipTypes.CreateMembershipType;
+﻿using Asp.Versioning;
+using GymManagement.Application.MembershipTypes.CreateMembershipType;
 using GymManagement.Application.MembershipTypes.GetMembershipTypes;
 using GymManagement.Application.MembershipTypes.SearchMembershipTypes;
 using GymManagement.Domain.Entities.Memberships.MembershipTypes.Errors;
@@ -8,7 +9,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace GymManagement.Api.Controllers.MembershipTypes
 {
     [ApiController]
-    [Route("api/membershipTypes")]
+    [ApiVersion(1)]
+    [Route("api/v{version:apiVersion}/membershipTypes")]
     public class MembershipTypesController(ISender sender) : ControllerBase
     {
         [HttpGet]

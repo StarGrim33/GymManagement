@@ -1,4 +1,5 @@
-﻿using GymManagement.Application.Memberships.BuyMembership;
+﻿using Asp.Versioning;
+using GymManagement.Application.Memberships.BuyMembership;
 using GymManagement.Application.Memberships.GetMembership;
 using GymManagement.Application.Memberships.GetMembership.GetAllMemberships;
 using MediatR;
@@ -7,7 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace GymManagement.Api.Controllers.Memberships
 {
     [ApiController]
-    [Route("api/memberships")]
+    [ApiVersion(1)]
+    [Route("api/v{version:apiVersion}/memberships")]
     public class MembershipsController(ISender sender) : ControllerBase
     {
         [HttpGet("{membershipId:guid}")]

@@ -1,5 +1,10 @@
-﻿using GymManagement.Application.Abstractions.Messaging;
+﻿using GymManagement.Application.Abstractions.Caching;
 
 namespace GymManagement.Application.Users.GetUser;
 
-public record GetUserQuery(Guid UserId) : IQuery<UserResponse>;
+public sealed record GetUserQuery(Guid UserId) : ICachedQuery<UserResponse>
+{
+    public string CacheKey => $"users-{UserId}";
+
+    public TimeSpan? Expiration => null ;
+}

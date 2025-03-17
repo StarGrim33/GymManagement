@@ -27,11 +27,6 @@ internal sealed class UserConfiguration : IEntityTypeConfiguration<User>
             .HasColumnName("is_active")
             .IsRequired();
 
-        builder.Property(u => u.Role)
-            .HasColumnName("role")
-            .HasConversion<string>()
-            .IsRequired();
-
         builder.Property(u => u.FirstName)
             .HasConversion(
                 v => v.Value,
@@ -100,5 +95,8 @@ internal sealed class UserConfiguration : IEntityTypeConfiguration<User>
         builder.HasIndex(u => u.IdentityId).IsUnique();
 
         builder.HasIndex(u => u.Email).IsUnique();
+
+        builder.HasOne(u => u.Role)
+            .WithMany();
     }
 }
