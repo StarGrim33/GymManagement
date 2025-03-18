@@ -21,7 +21,7 @@ public sealed class ConfigureSwaggerOptions(IApiVersionDescriptionProvider provi
         Configure(options);
     }
 
-    private OpenApiInfo CreateVersionInfo(ApiVersionDescription description)
+    private static OpenApiInfo CreateVersionInfo(ApiVersionDescription description)
     {
         var openApiInfo = new OpenApiInfo
         {

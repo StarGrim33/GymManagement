@@ -25,7 +25,6 @@ namespace GymManagement.Api
 
             builder.Services.AddApplication();
             builder.Services.AddInfrastructure(builder.Configuration);
-            builder.Services.AddCache();
 
             builder.Services.ConfigureOptions<ConfigureSwaggerOptions>();
 

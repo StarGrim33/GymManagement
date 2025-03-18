@@ -1,22 +1,22 @@
 ﻿using GymManagement.Application.Abstractions.Exceptions;
 using GymManagement.Domain.Abstractions;
+using GymManagement.Infrastructure.Outbox;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace GymManagement.Infrastructure;
 
-public class ApplicationDbContext : DbContext, IUnitOfWork
+public class ApplicationDbContext(
+    DbContextOptions options,
+    ILogger<ApplicationDbContext> logger)
+    : DbContext(options), IUnitOfWork
 {
-    private readonly IPublisher _publisher;
-    private readonly ILogger<ApplicationDbContext> _logger;
-
-    public ApplicationDbContext(DbContextOptions options, IPublisher publisher, ILogger<ApplicationDbContext> logger) 
-        : base(options)
+    private static readonly JsonSerializerSettings JsonSerializerSettings = new()
     {
-        _publisher = publisher;
-        _logger = logger;
-    }
+        TypeNameHandling = TypeNameHandling.All
+    };
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -29,9 +29,9 @@ public class ApplicationDbContext : DbContext, IUnitOfWork
     {
         try
         {
-            var result = await base.SaveChangesAsync(cancellationToken);
+            AddDomainEventsAsOutboxMessages();
 
-            await PublishDomainEventsAsync();
+            var result = await base.SaveChangesAsync(cancellationToken);
 
             return result;
         }
@@ -41,9 +41,9 @@ public class ApplicationDbContext : DbContext, IUnitOfWork
         }
     }
 
-    private async Task PublishDomainEventsAsync()
+    private void AddDomainEventsAsOutboxMessages()
     {
-        var domainEvents = ChangeTracker
+        var outboxMessages = ChangeTracker
             .Entries<Entity>()
             .Select(entry => entry.Entity)
             .SelectMany(entity =>
@@ -54,19 +54,13 @@ public class ApplicationDbContext : DbContext, IUnitOfWork
 
                 return domainEvents;
             })
+            .Select(domainEvent => new OutboxMessage(
+                Guid.CreateVersion7(),
+                DateTime.UtcNow,
+                domainEvent.GetType().Name,
+                JsonConvert.SerializeObject(domainEvent, JsonSerializerSettings)))
             .ToList();
 
-        foreach (var domainEvent in domainEvents)
-        {
-            try
-            {
-                _logger.LogInformation("Publishing domain event: {EventName}", domainEvent.GetType().Name);
-                await _publisher.Publish(domainEvent);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Failed to publish domain event: {EventName}", domainEvent.GetType().Name);
-            }
-        }
+        AddRange(outboxMessages);
     }
 }
