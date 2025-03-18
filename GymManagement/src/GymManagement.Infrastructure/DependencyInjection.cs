@@ -15,6 +15,7 @@ using GymManagement.Infrastructure.Authentication;
 using GymManagement.Infrastructure.Authorization;
 using GymManagement.Infrastructure.Data;
 using GymManagement.Infrastructure.Email;
+using GymManagement.Infrastructure.Outbox;
 using GymManagement.Infrastructure.Repositories;
 using GymManagement.Infrastructure.Repositories.CachedRepositories;
 using Microsoft.AspNetCore.Authentication;
@@ -23,6 +24,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Quartz;
 using AuthenticationOptions = GymManagement.Infrastructure.Authentication.AuthenticationOptions;
 using AuthenticationService = GymManagement.Infrastructure.Authentication.AuthenticationService;
 using IAuthenticationService = GymManagement.Application.Abstractions.Authentication.IAuthenticationService;
@@ -49,6 +51,8 @@ public static class DependencyInjection
         AddHealthChecks(services, configuration);
 
         AddApiVersioning(services);
+
+        AddBackgroundJobs(services, configuration);
 
         return services;
     }
@@ -143,6 +147,15 @@ public static class DependencyInjection
         services.AddStackExchangeRedisCache(options => options.Configuration = connectionString);
 
         services.AddSingleton<ICacheService, CacheService>();
+
+        services.AddHybridCache(options =>
+        {
+            options.DefaultEntryOptions = new Microsoft.Extensions.Caching.Hybrid.HybridCacheEntryOptions
+            {
+                LocalCacheExpiration = TimeSpan.FromMinutes(2),
+                Expiration = TimeSpan.FromMinutes(2),
+            };
+        });
     }
 
     private static void AddHealthChecks(IServiceCollection services, IConfiguration configuration)
@@ -166,5 +179,16 @@ public static class DependencyInjection
             options.GroupNameFormat = "'v'V";
             options.SubstituteApiVersionInUrl = true;
         });
+    }
+
+    private static void AddBackgroundJobs(IServiceCollection services, IConfiguration configuration)
+    {
+        services.Configure<OutboxOptions>(configuration.GetSection("Outbox"));
+
+        services.AddQuartz();
+
+        services.AddQuartzHostedService(options => options.WaitForJobsToComplete = true);
+
+        services.ConfigureOptions<ProcessOutboxMessagesJobSetup>();
     }
 }

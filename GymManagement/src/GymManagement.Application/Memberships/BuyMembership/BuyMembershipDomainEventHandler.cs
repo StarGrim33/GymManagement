@@ -39,6 +39,6 @@ internal sealed class BuyMembershipDomainEventHandler
         await _emailService.SendAsync(
             user.Email.Value,
             subjectMessage,
-            bodyMessage);
+            bodyMessage); //ToDo: переделать на Outbox, так как использование напрямую стороннего сервиса не надежно.
     }
 }
