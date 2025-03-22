@@ -1,4 +1,4 @@
-﻿namespace GymManagement.Api.Controllers.Gyms;
+﻿namespace GymManagement.Api.Endpoints.Gyms;
 
 public record GetGymByQueryOptionsRequest(
     Guid GymId,

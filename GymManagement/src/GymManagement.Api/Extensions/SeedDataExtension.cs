@@ -18,7 +18,7 @@ namespace GymManagement.Api.Extensions
 
             var gyms = new List<object>();
 
-            for (int i = 0; i <= 3; i++)
+            for (var i = 0; i <= 3; i++)
             {
                 gyms.Add(CreateFakeGym(faker));
             }

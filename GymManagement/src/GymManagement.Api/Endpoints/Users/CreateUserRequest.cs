@@ -1,7 +1,7 @@
 ﻿using GymManagement.Domain.Entities;
 using GymManagement.Domain.Entities.Users;
 
-namespace GymManagement.Api.Controllers.Users;
+namespace GymManagement.Api.Endpoints.Users;
 
 public record CreateUserRequest(FirstName FirstName,
     LastName LastName,
@@ -10,5 +10,5 @@ public record CreateUserRequest(FirstName FirstName,
     string PhoneNumber,
     DateTime DateOfBirth,
     bool IsActive,
-    Role Role,
+    int RoleId,
     Address Address);

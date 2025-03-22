@@ -1,7 +1,7 @@
 ﻿using GymManagement.Domain.Entities.Gyms;
 using GymManagement.Domain.Entities;
 
-namespace GymManagement.Api.Controllers.Gyms;
+namespace GymManagement.Api.Endpoints.Gyms;
 
 public record CreateGymRequest(Name Name,
     Description Description,

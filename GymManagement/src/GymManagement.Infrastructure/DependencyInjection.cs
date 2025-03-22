@@ -173,7 +173,7 @@ public static class DependencyInjection
             options.DefaultApiVersion = new ApiVersion(1);
             options.ReportApiVersions = true;
             options.ApiVersionReader = new UrlSegmentApiVersionReader();
-        }).AddMvc()
+        })
         .AddApiExplorer(options =>
         {
             options.GroupNameFormat = "'v'V";
@@ -183,6 +183,8 @@ public static class DependencyInjection
 
     private static void AddBackgroundJobs(IServiceCollection services, IConfiguration configuration)
     {
+        var value = configuration.GetSection("Outbox").Value;
+
         services.Configure<OutboxOptions>(configuration.GetSection("Outbox"));
 
         services.AddQuartz();
