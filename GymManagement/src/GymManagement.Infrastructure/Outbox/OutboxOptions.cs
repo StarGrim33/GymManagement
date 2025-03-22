@@ -1,6 +1,6 @@
 ﻿namespace GymManagement.Infrastructure.Outbox;
 
-internal sealed class OutboxOptions
+public sealed class OutboxOptions
 {
     public int IntervalInSeconds { get; init; }
 

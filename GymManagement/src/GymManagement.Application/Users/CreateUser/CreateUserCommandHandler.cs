@@ -54,9 +54,9 @@ internal sealed class CreateUserCommandHandler(
 
             return Result.Success(newUser.Id);
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            return Result.Failure<Guid>(UserErrors.InternalServerError);
+            return Result.Failure<Guid>(UserErrors.InternalServerError, ex.StackTrace ?? "", ex.Message);
         }
     }
 

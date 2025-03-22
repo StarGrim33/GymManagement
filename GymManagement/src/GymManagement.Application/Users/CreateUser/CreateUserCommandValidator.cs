@@ -37,8 +37,8 @@ public class CreateUserCommandValidator : AbstractValidator<CreateUserCommand>
             .NotNull().WithMessage("Address cannot be null.")
             .SetValidator(new AddressValidator());
 
-        RuleFor(x => x.Role)
-            .IsInEnum().WithMessage("Invalid role specified.");
+        RuleFor(x => x.Role.Id)
+            .LessThan(2);
     }
 
     private static bool BeAValidAge(DateTime dateOfBirth)

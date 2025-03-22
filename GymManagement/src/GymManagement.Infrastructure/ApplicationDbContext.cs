@@ -1,8 +1,8 @@
 ﻿using GymManagement.Application.Abstractions.Exceptions;
 using GymManagement.Domain.Abstractions;
 using GymManagement.Infrastructure.Outbox;
-using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
@@ -17,6 +17,8 @@ public class ApplicationDbContext(
     {
         TypeNameHandling = TypeNameHandling.All
     };
+
+    private IDbContextTransaction? _currentTransaction;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -38,6 +40,53 @@ public class ApplicationDbContext(
         catch (DbUpdateConcurrencyException ex)
         {
             throw new ConcurrencyException("Concurrency exception occurred", ex);
+        }
+    }
+
+    public async Task BeginTransactionAsync(CancellationToken cancellationToken = default)
+    {
+        if (_currentTransaction != null)
+        {
+            throw new InvalidOperationException("A transaction is already in progress.");
+        }
+
+        _currentTransaction = await Database.BeginTransactionAsync(cancellationToken);
+    }
+
+    public async Task CommitTransactionAsync(CancellationToken cancellationToken = default)
+    {
+        if (_currentTransaction == null)
+        {
+            throw new InvalidOperationException("No active transaction to commit.");
+        }
+
+        try
+        {
+            await SaveChangesAsync(cancellationToken);
+            await _currentTransaction.CommitAsync(cancellationToken);
+        }
+        finally
+        {
+            _currentTransaction.Dispose();
+            _currentTransaction = null;
+        }
+    }
+
+    public async Task RollbackTransactionAsync(CancellationToken cancellationToken = default)
+    {
+        if (_currentTransaction == null)
+        {
+            throw new InvalidOperationException("No active transaction to rollback.");
+        }
+
+        try
+        {
+            await _currentTransaction.RollbackAsync(cancellationToken);
+        }
+        finally
+        {
+            _currentTransaction.Dispose();
+            _currentTransaction = null;
         }
     }
 

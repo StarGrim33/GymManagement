@@ -4,6 +4,7 @@ using GymManagement.Application.Abstractions.Data;
 using GymManagement.Domain.Abstractions;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Quartz;
 
@@ -13,7 +14,7 @@ namespace GymManagement.Infrastructure.Outbox;
 internal sealed class ProcessOutboxMessages(
     ISqlConnectionFactory connectionFactory,
     IPublisher publisher,
-    OutboxOptions outboxOptions,
+    IOptions<OutboxOptions> outboxOptions,
     ILogger<ProcessOutboxMessages> logger)
     : IJob
 {
@@ -21,6 +22,8 @@ internal sealed class ProcessOutboxMessages(
     {
         TypeNameHandling = TypeNameHandling.All
     };
+
+    private readonly OutboxOptions _outboxOptions = outboxOptions.Value;
 
     public async Task Execute(IJobExecutionContext context)
     {
@@ -91,7 +94,7 @@ internal sealed class ProcessOutboxMessages(
                    FROM outbox_messages
                    WHERE processed_on_utc IS NULL
                    ORDER BY occurred_on_utc
-                   LIMIT {outboxOptions.BatchSize}
+                   LIMIT {_outboxOptions.BatchSize}
                    FOR UPDATE
                    """;
 
