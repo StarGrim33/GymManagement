@@ -28,7 +28,7 @@ internal sealed class GetAllGymsHandler(IGymRepository repository)
             Street = g.Street ?? string.Empty,
             City = g.City ?? string.Empty,
             ZipCode = g.ZipCode ?? string.Empty,
-            Schedule = g.Schedule ?? string.Empty
+            Schedule = string.Empty
         }).ToList();
 
         var paginatedList = new PaginatedList<GymResponse>(

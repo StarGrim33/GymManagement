@@ -8,4 +8,5 @@ public record CreateGymRequest(
     string Street,
     string City,
     string ZipCode,
-    string Schedule);
+    string Region,
+    string Country);

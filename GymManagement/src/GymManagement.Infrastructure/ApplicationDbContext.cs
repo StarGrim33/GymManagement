@@ -121,17 +121,17 @@ public class ApplicationDbContext(
     }
 
     // IApplicationDbContext implementation
-    public async Task AddAsync<T>(T entity, CancellationToken cancellationToken = default) where T : class
+    public async Task AddEntityAsync<T>(T entity, CancellationToken cancellationToken = default) where T : class
     {
         await Set<T>().AddAsync(entity, cancellationToken);
     }
 
-    public void Update<T>(T entity) where T : class
+    public void UpdateEntity<T>(T entity) where T : class
     {
         Set<T>().Update(entity);
     }
 
-    public void Remove<T>(T entity) where T : class
+    public void RemoveEntity<T>(T entity) where T : class
     {
         Set<T>().Remove(entity);
     }
@@ -180,9 +180,14 @@ public class ApplicationDbContext(
     }
 
     public DbSet<User> Users => Set<User>();
+
     public DbSet<Gym> Gyms => Set<Gym>();
+
     public DbSet<Membership> Memberships => Set<Membership>();
+
     public DbSet<MembershipType> MembershipTypes => Set<MembershipType>();
+
     public DbSet<Invoice> Invoices => Set<Invoice>();
+
     public DbSet<Trainer> Trainers => Set<Trainer>();
 }

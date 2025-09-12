@@ -96,7 +96,8 @@ public static class GymEndpoints
             request.Street,
             request.City,
             request.ZipCode,
-            request.Schedule);
+            request.Region,
+            request.Country);
 
         var result = await sender.Send(command, cancellationToken);
 
@@ -129,19 +130,15 @@ public static class GymEndpoints
         [FromBody] UpdateGymRequest request,
         CancellationToken cancellationToken)
     {
-        if (gymId != request.GymId)
-        {
-            return Results.BadRequest("Идентификатор зала в маршруте и теле запроса не совпадают.");
-        }
-
         var command = new UpdateGymCommand(
-            request.GymId,
+            gymId,
             request.Name,
             request.Description,
             request.Street,
             request.City,
             request.ZipCode,
-            request.Schedule);
+            request.Region,
+            request.Country);
 
         var result = await sender.Send(command, cancellationToken);
 

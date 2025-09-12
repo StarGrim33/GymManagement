@@ -82,7 +82,7 @@ public class Program
             });
 
             app.ApplyMigrations();
-            //app.SeedData();
+            app.SeedData();
         }
 
         app.UseHttpsRedirection();

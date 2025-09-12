@@ -31,10 +31,10 @@ internal sealed class GymRepository(ApplicationDbContext dbContext)
                 Id = g.Id,
                 Name = g.Name,
                 Description = g.Description,
-                Street = g.Street,
-                City = g.City,
-                ZipCode = g.ZipCode,
-                Schedule = g.Schedule
+                Street = g.Address.Street,
+                City = g.Address.City,
+                ZipCode = g.Address.ZipCode,
+                Schedule = string.Empty
             })
             .FirstOrDefaultAsync(cancellationToken);
     }
@@ -53,10 +53,10 @@ internal sealed class GymRepository(ApplicationDbContext dbContext)
                 Id = g.Id,
                 Name = g.Name,
                 Description = g.Description,
-                Street = g.Street,
-                City = g.City,
-                ZipCode = g.ZipCode,
-                Schedule = g.Schedule
+                Street = g.Address.Street,
+                City = g.Address.City,
+                ZipCode = g.Address.ZipCode,
+                Schedule = string.Empty
             })
             .FirstOrDefaultAsync(cancellationToken);
     }
@@ -78,10 +78,10 @@ internal sealed class GymRepository(ApplicationDbContext dbContext)
                 Id = g.Id,
                 Name = g.Name,
                 Description = g.Description,
-                Street = g.Street,
-                City = g.City,
-                ZipCode = g.ZipCode,
-                Schedule = g.Schedule
+                Street = g.Address.Street,
+                City = g.Address.City,
+                ZipCode = g.Address.ZipCode,
+                Schedule = string.Empty
             }).ToListAsync(cancellationToken);
     }
 
@@ -95,10 +95,10 @@ internal sealed class GymRepository(ApplicationDbContext dbContext)
                 Id = g.Id,
                 Name = g.Name,
                 Description = g.Description,
-                Street = g.Street,
-                City = g.City,
-                ZipCode = g.ZipCode,
-                Schedule = g.Schedule
+                Street = g.Address.Street,
+                City = g.Address.City,
+                ZipCode = g.Address.ZipCode,
+                Schedule = string.Empty
             })
             .FirstOrDefaultAsync(cancellationToken);
     }

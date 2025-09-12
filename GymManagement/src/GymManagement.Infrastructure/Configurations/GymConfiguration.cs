@@ -1,4 +1,6 @@
-﻿using GymManagement.Domain.Entities.Gyms;
+﻿using System.Text.Json;
+using GymManagement.Domain.Entities.Gyms;
+using GymManagement.Domain.Entities.OperatingHoursModel;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -12,7 +14,6 @@ internal sealed class GymConfiguration : IEntityTypeConfiguration<Gym>
 
         builder.HasKey(g => g.Id);
 
-        // Простые свойства без Value Objects
         builder.Property(g => g.Name)
             .HasColumnName("name")
             .HasMaxLength(100)
@@ -23,48 +24,43 @@ internal sealed class GymConfiguration : IEntityTypeConfiguration<Gym>
             .HasColumnType("text")
             .IsRequired();
 
-        builder.Property(g => g.Street)
-            .HasColumnName("street")
-            .HasMaxLength(100)
+        // Owned Address -> keep same column names as before for simpler migration
+        builder.OwnsOne(g => g.Address, addressBuilder =>
+        {
+            addressBuilder.Property(a => a.Street)
+                .HasColumnName("street")
+                .HasMaxLength(100)
+                .IsRequired();
+            addressBuilder.Property(a => a.City)
+                .HasColumnName("city")
+                .HasMaxLength(50)
+                .IsRequired();
+            addressBuilder.Property(a => a.ZipCode)
+                .HasColumnName("zip_code")
+                .HasMaxLength(20)
+                .IsRequired();
+            addressBuilder.Property(a => a.Region)
+                .HasColumnName("region")
+                .HasMaxLength(50);
+            addressBuilder.Property(a => a.Country)
+                .HasColumnName("country")
+                .HasMaxLength(50);
+        });
+
+        // OperatingHours stored as JSON (PostgreSQL jsonb) – serialize/deserialize
+        builder.Property(g => g.OperatingHours)
+            .HasColumnName("operating_hours")
+            .HasColumnType("jsonb")
             .IsRequired();
 
-        builder.Property(g => g.City)
-            .HasColumnName("city")
-            .HasMaxLength(50)
-            .IsRequired();
+        // Backing field access for collections
+        builder.Metadata.FindNavigation(nameof(Gym.GymAmenities))!.SetPropertyAccessMode(PropertyAccessMode.Field);
+        builder.Metadata.FindNavigation(nameof(Gym.Trainers))!.SetPropertyAccessMode(PropertyAccessMode.Field);
+        builder.Metadata.FindNavigation(nameof(Gym.Equipment))!.SetPropertyAccessMode(PropertyAccessMode.Field);
+        builder.Metadata.FindNavigation(nameof(Gym.Memberships))!.SetPropertyAccessMode(PropertyAccessMode.Field);
+        builder.Metadata.FindNavigation(nameof(Gym.TrainingSessions))!.SetPropertyAccessMode(PropertyAccessMode.Field);
 
-        builder.Property(g => g.ZipCode)
-            .HasColumnName("zip_code")
-            .HasMaxLength(20)
-            .IsRequired();
-
-        builder.Property(g => g.Schedule)
-            .HasColumnName("schedule")
-            .HasColumnType("text")
-            .IsRequired();
-
-        // Настройка backing fields для приватных коллекций
-        builder.Metadata
-            .FindNavigation(nameof(Gym.GymAmenities))!
-            .SetPropertyAccessMode(PropertyAccessMode.Field);
-
-        builder.Metadata
-            .FindNavigation(nameof(Gym.Trainers))!
-            .SetPropertyAccessMode(PropertyAccessMode.Field);
-
-        builder.Metadata
-            .FindNavigation(nameof(Gym.Equipment))!
-            .SetPropertyAccessMode(PropertyAccessMode.Field);
-
-        builder.Metadata
-            .FindNavigation(nameof(Gym.Memberships))!
-            .SetPropertyAccessMode(PropertyAccessMode.Field);
-
-        builder.Metadata
-            .FindNavigation(nameof(Gym.TrainingSessions))!
-            .SetPropertyAccessMode(PropertyAccessMode.Field);
-
-        // Отношения
+        // Relationships
         builder.HasMany(g => g.Trainers)
             .WithOne(t => t.Gym)
             .HasForeignKey(t => t.GymId)
@@ -90,7 +86,6 @@ internal sealed class GymConfiguration : IEntityTypeConfiguration<Gym>
             .HasForeignKey(ga => ga.GymId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        // Индексы
         builder.HasIndex(g => g.Name)
             .IsUnique()
             .HasDatabaseName("IX_Gyms_Name");

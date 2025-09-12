@@ -35,9 +35,5 @@ public class CreateGymCommandValidator : AbstractValidator<CreateGymCommand>
             .WithMessage("Почтовый индекс обязателен")
             .MaximumLength(20)
             .WithMessage("Почтовый индекс не должен превышать 20 символов");
-
-        RuleFor(x => x.Schedule)
-            .NotEmpty()
-            .WithMessage("Расписание обязательно");
     }
 }

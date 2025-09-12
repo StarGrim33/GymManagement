@@ -9,4 +9,5 @@ public record UpdateGymCommand(
     string Street,
     string City,
     string ZipCode,
-    string Schedule) : ICommand<Guid>;
+    string Region,
+    string Country) : ICommand<Guid>;

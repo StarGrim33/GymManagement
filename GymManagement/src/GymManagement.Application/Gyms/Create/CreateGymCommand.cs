@@ -8,4 +8,5 @@ public sealed record CreateGymCommand(
     string Street,
     string City,
     string ZipCode,
-    string Schedule) : ICommand<Guid>;
+    string Region,
+    string Country) : ICommand<Guid>;

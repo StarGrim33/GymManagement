@@ -48,7 +48,7 @@ internal sealed class CreateUserCommandHandler(
 
             newUser.SetIdentityId(identityId);
 
-            await dbContext.AddAsync(newUser, cancellationToken);
+            await dbContext.AddEntityAsync(newUser, cancellationToken);
             await dbContext.SaveChangesAsync(cancellationToken);
 
             return Result.Success(newUser.Id);

@@ -11,7 +11,7 @@ public class GymDto
     public string? Street { get; init; }
     public string? City { get; init; }
     public string? ZipCode { get; init; }
-    public string? Schedule { get; init; }
+    public string? Schedule { get; init; } = string.Empty; // legacy removed, keep for DTO compatibility
     public List<GymAmenity>? GymAmenities { get; init; }
     public List<Trainer>? Trainers { get; init; }
     public List<GymEquipment>? Equipment { get; init; }
