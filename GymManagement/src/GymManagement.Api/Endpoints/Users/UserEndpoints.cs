@@ -3,7 +3,6 @@ using GymManagement.Application.Users.CreateUser;
 using GymManagement.Application.Users.GetLoggedInUser;
 using GymManagement.Application.Users.GetUser;
 using GymManagement.Application.Users.GetUser.GetAllUsers;
-using GymManagement.Domain.Entities;
 using GymManagement.Domain.Entities.Users;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -78,7 +77,9 @@ public static class UserEndpoints
             request.DateOfBirth,
             request.IsActive,
             role,
-            new Address(request.Address.Street, request.Address.City, request.Address.ZipCode));
+            request.Street,
+            request.City,
+            request.ZipCode);
 
         var result = await sender.Send(command, cancellationToken);
 

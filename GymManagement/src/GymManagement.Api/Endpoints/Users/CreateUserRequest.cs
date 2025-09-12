@@ -3,12 +3,15 @@ using GymManagement.Domain.Entities.Users;
 
 namespace GymManagement.Api.Endpoints.Users;
 
-public record CreateUserRequest(FirstName FirstName,
-    LastName LastName,
-    Email Email,
+public record CreateUserRequest(
+    string FirstName,
+    string LastName,
+    string Email,
     string Password,
     string PhoneNumber,
     DateTime DateOfBirth,
     bool IsActive,
     int RoleId,
-    Address Address);
+    string Street,
+    string City,
+    string ZipCode);

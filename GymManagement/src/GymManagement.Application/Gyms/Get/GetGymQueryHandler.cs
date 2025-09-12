@@ -1,6 +1,5 @@
 ﻿using GymManagement.Application.Abstractions.Messaging;
 using GymManagement.Domain.Abstractions;
-using GymManagement.Domain.Entities;
 using GymManagement.Domain.Entities.Gyms;
 
 namespace GymManagement.Application.Gyms.Get;
@@ -13,17 +12,18 @@ internal sealed class GetGymQueryHandler(IGymRepository repository) : IQueryHand
 
         if (gym == null)
         {
-            return new GymResponse();
+            return Result.Failure<GymResponse>(new Error("Gym.NotFound", "Спортзал не найден"));
         }
 
         var gymResponse = new GymResponse
         {
             Id = gym.Id,
-            Name = new Name(gym.Name),
-            Description = new Description(gym.Description),
-            Address = new Address(gym.Address.Street, gym.Address.City, gym.Address.ZipCode),
-            Schedule = new Schedule(gym.Schedule),
-
+            Name = gym.Name ?? string.Empty,
+            Description = gym.Description ?? string.Empty,
+            Street = gym.Street ?? string.Empty,
+            City = gym.City ?? string.Empty,
+            ZipCode = gym.ZipCode ?? string.Empty,
+            Schedule = gym.Schedule ?? string.Empty,
             GymAmenities = gym.GymAmenities?.ToList() ?? [],
             Trainers = gym.Trainers?.ToList() ?? [],
             Equipment = gym.Equipment?.ToList() ?? [],

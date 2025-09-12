@@ -12,13 +12,15 @@ internal sealed class GetUserQueryHandler(IUserRepository userRepository) : IQue
 
         if (user == null)
         {
-            return new UserResponse();
+            return Result.Failure<UserResponse>(new Error("User.NotFound", "Пользователь не найден"));
         }
 
         var userResponse = new UserResponse
         {
             Id = user.Id,
-            Address = user.Address,
+            Street = user.Street,
+            City = user.City,
+            ZipCode = user.ZipCode,
             TrainingSessions = user.TrainingSessions,
             FirstName = user.FirstName,
             LastName = user.LastName,

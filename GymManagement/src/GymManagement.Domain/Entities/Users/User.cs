@@ -12,14 +12,16 @@ public sealed class User : Entity
 
     private User(
         Guid id,
-        FirstName firstName,
-        LastName lastName,
-        Email email,
+        string firstName,
+        string lastName,
+        string email,
         string phoneNumber,
         DateTime dateOfBirth,
         bool isActive,
         Role role, 
-        Address address)
+        string street,
+        string city,
+        string zipCode)
         : base(id)
     {
         FirstName = firstName;
@@ -29,7 +31,9 @@ public sealed class User : Entity
         DateOfBirth = dateOfBirth;
         IsActive = isActive;
         Role = role;
-        Address = address;
+        Street = street;
+        City = city;
+        ZipCode = zipCode;
     }
 
     public User()
@@ -37,41 +41,42 @@ public sealed class User : Entity
     }
 
     public List<Membership> Memberships { get; private set; } = [];
-
-    public Role Role { get; private set; }
-
-    public Address Address { get; private set; }
-
-    public FirstName FirstName { get; private set; }
-
-    public LastName LastName { get; private set; }
-
-    public Email Email { get; private set; }
-
-    public string PhoneNumber { get; private set; }
-
+    public Role Role { get; private set; } = null!;
+    public string Street { get; private set; } = string.Empty;
+    public string City { get; private set; } = string.Empty;
+    public string ZipCode { get; private set; } = string.Empty;
+    public string FirstName { get; private set; } = string.Empty;
+    public string LastName { get; private set; } = string.Empty;
+    public string Email { get; private set; } = string.Empty;
+    public string PhoneNumber { get; private set; } = string.Empty;
     public DateTime DateOfBirth { get; private set; }
-
     public bool IsActive { get; private set; }
-
     public string IdentityId { get; private set; } = string.Empty;
-
     public List<TrainingSession> TrainingSessions { get; private set; } = [];
-
     public string PasswordHash { get; private set; } = string.Empty;
-
     public IReadOnlyCollection<Role> Roles => _roles.AsReadOnly();
 
     public static User Create(
-        FirstName firstName, 
-        LastName lastName, 
-        Email email, 
+        string firstName, 
+        string lastName, 
+        string email, 
         string phoneNumber, 
         DateTime dateOfBirth, 
         bool isActive, 
         Role role,
-        Address address)
+        string street,
+        string city,
+        string zipCode)
     {
+        Guard.AgainstNullOrEmpty(firstName, nameof(firstName));
+        Guard.AgainstNullOrEmpty(lastName, nameof(lastName));
+        Guard.AgainstNullOrEmpty(email, nameof(email));
+        Guard.AgainstNull(role, nameof(role));
+        Guard.AgainstNullOrEmpty(city, nameof(city));
+        Guard.AgainstNullOrEmpty(street, nameof(street));
+        Guard.AgainstNullOrEmpty(zipCode, nameof(zipCode));
+        Guard.AgainstNullOrEmpty(phoneNumber, nameof(phoneNumber));
+
         var user = new User(
             Guid.NewGuid(),
             firstName,
@@ -81,10 +86,11 @@ public sealed class User : Entity
             dateOfBirth,
             isActive,
             role,
-            address);
+            street,
+            city,
+            zipCode);
 
         user.RaiseDomainEvent(new UserCreatedDomainEvent(user.Id));
-
         user._roles.Add(role);
 
         return user;
@@ -93,7 +99,6 @@ public sealed class User : Entity
     internal void AddMembership(Membership membership)
     {
         ArgumentNullException.ThrowIfNull(membership);
-
         Memberships.Add(membership);
     }
 
@@ -106,14 +111,12 @@ public sealed class User : Entity
     public void SetIdentityId(string identityId)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(identityId);
-
         IdentityId = identityId;
     }
 
     public void SetPassword(string password)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(password);
-
         PasswordHash = HashPassword(password);
     }
 

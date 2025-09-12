@@ -27,7 +27,9 @@ namespace GymManagement.Application.Users.GetUser.GetAllUsers
                 DateOfBirth = u.DateOfBirth,
                 IsActive = u.IsActive,
                 Role = u.Role,
-                Address = u.Address
+                Street = u.Street,
+                City = u.City,
+                ZipCode = u.ZipCode
             }).ToList();
 
             var paginatedList = new PaginatedList<UserResponse>(

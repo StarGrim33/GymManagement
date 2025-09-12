@@ -1,9 +1,7 @@
 ﻿using GymManagement.Application.Abstractions.Messaging;
 using GymManagement.Application.Common;
 using GymManagement.Domain.Abstractions;
-using GymManagement.Domain.Entities;
 using GymManagement.Domain.Entities.Gyms;
-using GymManagement.Domain.Entities.Memberships.Errors;
 
 namespace GymManagement.Application.Gyms.Get.GetAll;
 
@@ -20,15 +18,17 @@ internal sealed class GetAllGymsHandler(IGymRepository repository)
             cancellationToken);
 
         if (gyms.Count == 0)
-            return Result.Failure<PaginatedList<GymResponse>>(MembershipErrors.NotFound);
+            return Result.Failure<PaginatedList<GymResponse>>(new Error("Gym.NotFound", "Спортзалы не найдены"));
 
         var gymResponses = gyms.Select(g => new GymResponse
         {
             Id = g.Id,
-            Name = new Name(g.Name),
-            Description = new Description(g.Description),
-            Address = new Address(g.Address.City, g.Address.Street, g.Address.ZipCode),
-            Schedule = new Schedule(g.Schedule)
+            Name = g.Name ?? string.Empty,
+            Description = g.Description ?? string.Empty,
+            Street = g.Street ?? string.Empty,
+            City = g.City ?? string.Empty,
+            ZipCode = g.ZipCode ?? string.Empty,
+            Schedule = g.Schedule ?? string.Empty
         }).ToList();
 
         var paginatedList = new PaginatedList<GymResponse>(

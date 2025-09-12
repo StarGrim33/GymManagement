@@ -1,4 +1,5 @@
 ﻿using GymManagement.Application.Abstractions.Authentication;
+using GymManagement.Application.Abstractions.Data;
 using GymManagement.Application.Abstractions.Messaging;
 using GymManagement.Domain.Abstractions;
 using GymManagement.Domain.Entities.Users;
@@ -8,16 +9,15 @@ using System.Security.Cryptography;
 namespace GymManagement.Application.Users.CreateUser;
 
 internal sealed class CreateUserCommandHandler(
-    IUserRepository userRepository, 
-    IUnitOfWork unitOfWork,
+    IApplicationDbContext dbContext,
     IAuthenticationService authenticationService)
     : ICommandHandler<CreateUserCommand, Guid>
 {
     public async Task<Result<Guid>> Handle(CreateUserCommand request, 
         CancellationToken cancellationToken)
     {
-        var normalizedEmail = NormalizeEmail(request.Email.Value);
-        var existingUser = await userRepository.GetByEmailAsync(normalizedEmail, cancellationToken);
+        var normalizedEmail = NormalizeEmail(request.Email);
+        var existingUser = await dbContext.GetUserByEmailAsync(normalizedEmail, cancellationToken);
 
         if (existingUser != null)
         {
@@ -32,10 +32,10 @@ internal sealed class CreateUserCommandHandler(
             request.DateOfBirth,
             request.IsActive,
             request.Role,
-            request.Address
+            request.Street,
+            request.City,
+            request.ZipCode
         );
-
-        //var securePassword = GenerateSecurePassword(); Другая реализация пароля через случайную генерацию значения.
 
         newUser.SetPassword(request.Password);
 
@@ -48,9 +48,8 @@ internal sealed class CreateUserCommandHandler(
 
             newUser.SetIdentityId(identityId);
 
-            await userRepository.AddAsync(newUser, cancellationToken);
-
-            await unitOfWork.SaveChangesAsync(cancellationToken);
+            await dbContext.AddAsync(newUser, cancellationToken);
+            await dbContext.SaveChangesAsync(cancellationToken);
 
             return Result.Success(newUser.Id);
         }
@@ -68,7 +67,7 @@ internal sealed class CreateUserCommandHandler(
             return emailValue;
 
         var name = match.Groups["name"].Value.Replace(".", "");
-        var plusIndex = name.IndexOf('+');
+        var plusIndex = name.IndexOf('-');
 
         if (plusIndex > 0)
             name = name[..plusIndex];

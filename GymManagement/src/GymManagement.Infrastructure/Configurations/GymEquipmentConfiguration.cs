@@ -14,17 +14,11 @@ public sealed class GymEquipmentConfiguration : IEntityTypeConfiguration<GymEqui
         builder.HasKey(g => g.Id);
 
         builder.Property(u => u.Name)
-            .HasConversion(
-                v => v.Value,
-                v => new Name(v))
             .HasColumnName("name")
             .HasMaxLength(50)
             .IsRequired();
 
         builder.Property(u => u.Description)
-            .HasConversion(
-                v => v.Value,
-                v => new Description(v))
             .HasColumnName("description")
             .HasMaxLength(250)
             .IsRequired();

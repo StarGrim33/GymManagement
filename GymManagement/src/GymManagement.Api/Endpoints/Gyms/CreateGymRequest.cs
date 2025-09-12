@@ -1,9 +1,11 @@
-﻿using GymManagement.Domain.Entities.Gyms;
-using GymManagement.Domain.Entities;
+﻿using GymManagement.Domain.Entities;
 
 namespace GymManagement.Api.Endpoints.Gyms;
 
-public record CreateGymRequest(Name Name,
-    Description Description,
-    Address Address,
-    Schedule Schedule);
+public record CreateGymRequest(
+    string Name,
+    string Description,
+    string Street,
+    string City,
+    string ZipCode,
+    string Schedule);

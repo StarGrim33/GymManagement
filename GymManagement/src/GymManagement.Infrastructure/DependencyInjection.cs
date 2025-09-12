@@ -1,7 +1,6 @@
 ﻿using Asp.Versioning;
 using Dapper;
 using GymManagement.Application.Abstractions.Authentication;
-using GymManagement.Application.Abstractions.Caching;
 using GymManagement.Application.Abstractions.Data;
 using GymManagement.Application.Abstractions.Email;
 using GymManagement.Domain.Abstractions;
@@ -17,7 +16,6 @@ using GymManagement.Infrastructure.Data;
 using GymManagement.Infrastructure.Email;
 using GymManagement.Infrastructure.Outbox;
 using GymManagement.Infrastructure.Repositories;
-using GymManagement.Infrastructure.Repositories.CachedRepositories;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -45,8 +43,6 @@ public static class DependencyInjection
         AddAuthentication(services, configuration);
 
         AddAuthorization(services);
-
-        AddCaching(services, configuration);
 
         AddHealthChecks(services, configuration);
 
@@ -101,69 +97,34 @@ public static class DependencyInjection
                 .LogTo(Console.WriteLine);
         });
 
-        services.AddScoped<IUserRepository, UserRepository>();
-
-        //services.Decorate<IUserRepository, CachedUserRepository>();
-
-        services.AddScoped<IMembershipRepository, MembershipRepository>();
-
-        //services.Decorate<IMembershipRepository, CachedMembershipRepository>();
-
-        services.AddScoped<IMembershipTypeRepository, MembershipTypeRepository>();
-
-        //services.Decorate<IMembershipTypeRepository, CachedMembershipTypeRepository>();
-
-        services.AddScoped<IInvoiceRepository, InvoiceRepository>();
-
-        //services.Decorate<IInvoiceRepository, CachedInvoiceRepository>();
-
-        services.AddScoped<IGymRepository, GymRepository>();
-
-        //services.Decorate<IGymRepository, CachedGymRepository>();
-
-        services.AddScoped<ITrainerRepository, TrainerRepository>();
-
-        //services.Decorate<ITrainerRepository, CachedTrainerRepository>();
-
+        // Register both interfaces for the same implementation
+        services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
         services.AddScoped<IUnitOfWork>(provider => provider.GetRequiredService<ApplicationDbContext>());
 
         services.AddSingleton<ISqlConnectionFactory>(_ => new SqlConnectionFactory(connectionString));
+
+        // Repository registrations
+        services.AddScoped<IGymRepository, GymRepository>();
+        services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IMembershipRepository, MembershipRepository>();
+        services.AddScoped<IMembershipTypeRepository, MembershipTypeRepository>();
+        services.AddScoped<ITrainerRepository, TrainerRepository>();
+        services.AddScoped<IInvoiceRepository, InvoiceRepository>();
 
         SqlMapper.AddTypeHandler(new DateOnlyTypeHandler());
     }
 
     private static void AddAuthorization(IServiceCollection services)
     {
-        services.AddScoped<AuthorizationService>();
-
+        // Убираем AuthorizationService пока не используем кэширование
         services.AddTransient<IClaimsTransformation, CustomClaimsTransformation>();
-    }
-
-    private static void AddCaching(IServiceCollection services, IConfiguration configuration)
-    {
-        var connectionString = configuration.GetConnectionString("Cache")
-                               ?? throw new ArgumentNullException(nameof(configuration));
-
-        services.AddStackExchangeRedisCache(options => options.Configuration = connectionString);
-
-        services.AddSingleton<ICacheService, CacheService>();
-
-        services.AddHybridCache(options =>
-        {
-            options.DefaultEntryOptions = new Microsoft.Extensions.Caching.Hybrid.HybridCacheEntryOptions
-            {
-                LocalCacheExpiration = TimeSpan.FromMinutes(2),
-                Expiration = TimeSpan.FromMinutes(2),
-            };
-        });
     }
 
     private static void AddHealthChecks(IServiceCollection services, IConfiguration configuration)
     {
         services.AddHealthChecks()
-            .AddNpgSql(configuration.GetConnectionString("Database")!)
-            .AddRedis(configuration.GetConnectionString("Cache")!)
-            .AddUrlGroup(new Uri(configuration["Keycloak:BaseUrl"]!), HttpMethod.Get, "keycloak");
+            .AddNpgSql(configuration.GetConnectionString("Database")!);
+            // Убираем Redis и Keycloak health checks пока не нужны
     }
 
     private static void AddApiVersioning(IServiceCollection services)
@@ -183,8 +144,6 @@ public static class DependencyInjection
 
     private static void AddBackgroundJobs(IServiceCollection services, IConfiguration configuration)
     {
-        var value = configuration.GetSection("Outbox").Value;
-
         services.Configure<OutboxOptions>(configuration.GetSection("Outbox"));
 
         services.AddQuartz();

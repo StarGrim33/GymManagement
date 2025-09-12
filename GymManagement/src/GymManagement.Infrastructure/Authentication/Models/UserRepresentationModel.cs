@@ -49,14 +49,14 @@ public sealed class UserRepresentationModel
     internal static UserRepresentationModel FromUser(User user) =>
         new()
         {
-            FirstName = user.FirstName.Value,
-            LastName = user.LastName.Value,
-            Email = user.Email.Value,
-            Username = user.Email.Value,
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            Email = user.Email,
+            Username = user.Email,
             Enabled = true,
             EmailVerified = true,
             CreatedTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
             Attributes = new Dictionary<string, List<string>>(),
-            RequiredActions = Array.Empty<string>()
+            RequiredActions = []
         };
 }

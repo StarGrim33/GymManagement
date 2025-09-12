@@ -1,5 +1,4 @@
-﻿using GymManagement.Domain.Abstractions;
-using GymManagement.Domain.Entities.Trainers;
+﻿using GymManagement.Domain.Entities.Trainers;
 using GymManagement.Domain.Entities.Users;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -14,6 +13,21 @@ internal sealed class UserConfiguration : IEntityTypeConfiguration<User>
 
         builder.HasKey(u => u.Id);
 
+        builder.Property(u => u.FirstName)
+            .HasColumnName("first_name")
+            .HasMaxLength(50)
+            .IsRequired();
+
+        builder.Property(u => u.LastName)
+            .HasColumnName("last_name")
+            .HasMaxLength(50)
+            .IsRequired();
+
+        builder.Property(u => u.Email)
+            .HasColumnName("email")
+            .HasMaxLength(100)
+            .IsRequired();
+
         builder.Property(u => u.PhoneNumber)
             .HasColumnName("phone_number")
             .HasMaxLength(20)
@@ -27,50 +41,31 @@ internal sealed class UserConfiguration : IEntityTypeConfiguration<User>
             .HasColumnName("is_active")
             .IsRequired();
 
-        builder.Property(u => u.FirstName)
-            .HasConversion(
-                v => v.Value,
-                v => new FirstName(v))
-            .HasColumnName("first_name")
-            .HasMaxLength(50)
-            .IsRequired();
+        builder.Property(u => u.IdentityId)
+            .HasColumnName("identity_id")
+            .HasMaxLength(50);
 
-        builder.Property(l => l.LastName)
-            .HasConversion(
-                v => v.Value,
-                v => new LastName(v))
-            .HasColumnName("last_name")
-            .HasMaxLength(50)
-            .IsRequired();
+        builder.Property(u => u.PasswordHash)
+            .HasColumnName("password_hash")
+            .HasMaxLength(500);
 
-        builder.Property(em => em.Email)
-            .HasConversion(
-                v => v.Value,
-                v => new Domain.Entities.Email(v))
-            .HasColumnName("email")
+        // Адрес как отдельные поля
+        builder.Property(u => u.Street)
+            .HasColumnName("street")
             .HasMaxLength(100)
-        .IsRequired();
+            .IsRequired();
 
-        builder.Property(u => u.IdentityId).HasColumnName("identity_id");
+        builder.Property(u => u.City)
+            .HasColumnName("city")
+            .HasMaxLength(50)
+            .IsRequired();
 
-        builder.OwnsOne(u => u.Address, a =>
-        {
-            a.Property(addr => addr.Street)
-                .HasColumnName("street")
-                .HasMaxLength(100)
-                .IsRequired();
+        builder.Property(u => u.ZipCode)
+            .HasColumnName("zip_code")
+            .HasMaxLength(20)
+            .IsRequired();
 
-            a.Property(addr => addr.City)
-                .HasColumnName("city")
-                .HasMaxLength(50)
-                .IsRequired();
-
-            a.Property(addr => addr.ZipCode)
-                .HasColumnName("zip_code")
-                .HasMaxLength(20)
-                .IsRequired();
-        });
-
+        // Отношения
         builder.HasMany(u => u.Memberships)
             .WithOne(m => m.User)
             .HasForeignKey(m => m.UserId)
@@ -92,8 +87,8 @@ internal sealed class UserConfiguration : IEntityTypeConfiguration<User>
                     .OnDelete(DeleteBehavior.Cascade)
             );
 
+        // Индексы
         builder.HasIndex(u => u.IdentityId).IsUnique();
-
         builder.HasIndex(u => u.Email).IsUnique();
 
         builder.HasOne(u => u.Role)

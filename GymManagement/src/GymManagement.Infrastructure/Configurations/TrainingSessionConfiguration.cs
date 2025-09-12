@@ -36,7 +36,7 @@ internal sealed class TrainingSessionConfiguration : IEntityTypeConfiguration<Tr
             .IsRequired();
         
         builder.HasOne(ts => ts.Trainer)
-            .WithMany(tr => tr.TrainingSessions)
+            .WithMany()
             .HasForeignKey(ts => ts.TrainerId)
             .OnDelete(DeleteBehavior.Restrict)
             .IsRequired();

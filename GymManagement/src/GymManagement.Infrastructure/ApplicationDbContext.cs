@@ -1,5 +1,12 @@
-﻿using GymManagement.Application.Abstractions.Exceptions;
+﻿using GymManagement.Application.Abstractions.Data;
+using GymManagement.Application.Abstractions.Exceptions;
 using GymManagement.Domain.Abstractions;
+using GymManagement.Domain.Entities.Gyms;
+using GymManagement.Domain.Entities.Invoices;
+using GymManagement.Domain.Entities.Memberships;
+using GymManagement.Domain.Entities.Memberships.MembershipTypes;
+using GymManagement.Domain.Entities.Trainers;
+using GymManagement.Domain.Entities.Users;
 using GymManagement.Infrastructure.Outbox;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -11,7 +18,7 @@ namespace GymManagement.Infrastructure;
 public class ApplicationDbContext(
     DbContextOptions options,
     ILogger<ApplicationDbContext> logger)
-    : DbContext(options), IUnitOfWork
+    : DbContext(options), IUnitOfWork, IApplicationDbContext
 {
     private static readonly JsonSerializerSettings JsonSerializerSettings = new()
     {
@@ -112,4 +119,70 @@ public class ApplicationDbContext(
 
         AddRange(outboxMessages);
     }
+
+    // IApplicationDbContext implementation
+    public async Task AddAsync<T>(T entity, CancellationToken cancellationToken = default) where T : class
+    {
+        await Set<T>().AddAsync(entity, cancellationToken);
+    }
+
+    public void Update<T>(T entity) where T : class
+    {
+        Set<T>().Update(entity);
+    }
+
+    public void Remove<T>(T entity) where T : class
+    {
+        Set<T>().Remove(entity);
+    }
+
+    public async Task<T?> FindAsync<T>(Guid id, CancellationToken cancellationToken = default) where T : class
+    {
+        return await Set<T>().FindAsync([id], cancellationToken);
+    }
+
+    public async Task<List<T>> GetAllAsync<T>(CancellationToken cancellationToken = default) where T : class
+    {
+        return await Set<T>().ToListAsync(cancellationToken);
+    }
+
+    public async Task<User?> GetUserByEmailAsync(string email, CancellationToken cancellationToken = default)
+    {
+        return await Set<User>()
+            .FirstOrDefaultAsync(u => u.Email == email, cancellationToken);
+    }
+
+    public async Task<Gym?> GetGymByNameAsync(string name, CancellationToken cancellationToken = default)
+    {
+        return await Set<Gym>()
+            .FirstOrDefaultAsync(g => g.Name == name, cancellationToken);
+    }
+
+    public async Task<Gym?> GetGymWithDetailsAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        return await Set<Gym>()
+            .AsSplitQuery()
+            .Include(g => g.GymAmenities)
+            .Include(g => g.Trainers)
+            .Include(g => g.Equipment)
+            .Include(g => g.Memberships)
+            .Include(g => g.TrainingSessions)
+            .FirstOrDefaultAsync(g => g.Id == id, cancellationToken);
+    }
+
+    public async Task<List<User>> GetPagedUsersAsync(int pageNumber, int pageSize, CancellationToken cancellationToken = default)
+    {
+        return await Set<User>()
+            .OrderBy(u => u.FirstName)
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync(cancellationToken);
+    }
+
+    public DbSet<User> Users => Set<User>();
+    public DbSet<Gym> Gyms => Set<Gym>();
+    public DbSet<Membership> Memberships => Set<Membership>();
+    public DbSet<MembershipType> MembershipTypes => Set<MembershipType>();
+    public DbSet<Invoice> Invoices => Set<Invoice>();
+    public DbSet<Trainer> Trainers => Set<Trainer>();
 }

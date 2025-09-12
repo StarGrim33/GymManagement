@@ -17,7 +17,7 @@ internal sealed class TrainerRepository(ApplicationDbContext dbContext)
     {
         return await dbContext
             .Set<Trainer>()
-            .Where(t => t.FirstName.Value + " " + t.LastName.Value == name)
+            .Where(t => t.FirstName + " " + t.LastName == name)
             .ToListAsync(cancellationToken);
     }
 
@@ -25,6 +25,6 @@ internal sealed class TrainerRepository(ApplicationDbContext dbContext)
     {
         return await dbContext
             .Set<Trainer>()
-            .FirstOrDefaultAsync(t => t.Email.Value == email, cancellationToken);
+            .FirstOrDefaultAsync(t => t.Email == email, cancellationToken);
     }
 }

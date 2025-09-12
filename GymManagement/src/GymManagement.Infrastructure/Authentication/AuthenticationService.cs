@@ -5,16 +5,9 @@ using GymManagement.Infrastructure.Authentication.Models;
 
 namespace GymManagement.Infrastructure.Authentication;
 
-internal sealed class AuthenticationService : IAuthenticationService
+internal sealed class AuthenticationService(HttpClient httpClient) : IAuthenticationService
 {
     private const string PasswordCredentialType = "password";
-
-    private readonly HttpClient _httpClient;
-
-    public AuthenticationService(HttpClient httpClient)
-    {
-        _httpClient = httpClient;
-    }
 
     public async Task<string> RegisterAsync(
         User user, 
@@ -33,7 +26,7 @@ internal sealed class AuthenticationService : IAuthenticationService
             }
         ];
 
-        var response = await _httpClient.PostAsJsonAsync(
+        var response = await httpClient.PostAsJsonAsync(
             "users",
             userRepresentationModel,
             cancellationToken);

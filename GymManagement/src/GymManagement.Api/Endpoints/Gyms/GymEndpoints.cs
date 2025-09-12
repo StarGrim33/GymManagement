@@ -93,7 +93,9 @@ public static class GymEndpoints
         var command = new CreateGymCommand(
             request.Name,
             request.Description,
-            request.Address,
+            request.Street,
+            request.City,
+            request.ZipCode,
             request.Schedule);
 
         var result = await sender.Send(command, cancellationToken);
@@ -136,11 +138,13 @@ public static class GymEndpoints
             request.GymId,
             request.Name,
             request.Description,
-            request.Address,
+            request.Street,
+            request.City,
+            request.ZipCode,
             request.Schedule);
 
         var result = await sender.Send(command, cancellationToken);
 
-        return result.IsFailure ? Results.BadRequest(result.Error) : Results.Ok(result.Value);
+        return result.IsFailure ? Results.BadRequest(result.Error) : Results.NoContent();
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System.Linq.Expressions;
-using GymManagement.Domain.Entities;
 using GymManagement.Domain.Entities.Gyms;
 using GymManagement.Domain.Entities.Gyms.QueryOptions;
 using Microsoft.EntityFrameworkCore;
@@ -26,19 +25,16 @@ internal sealed class GymRepository(ApplicationDbContext dbContext)
     {
         return await dbContext
             .Set<Gym>()
-            .Where(g => g.Name.Value == name)
+            .Where(g => g.Name == name)
             .Select(g => new GymDto
             {
                 Id = g.Id,
-                Name = g.Name.Value,
-                Description = g.Description.Value,
-                Address = new AddressDto
-                {
-                    Street = g.Address.Street,
-                    City = g.Address.City,
-                    ZipCode = g.Address.ZipCode
-                },
-                Schedule = g.Schedule.Value
+                Name = g.Name,
+                Description = g.Description,
+                Street = g.Street,
+                City = g.City,
+                ZipCode = g.ZipCode,
+                Schedule = g.Schedule
             })
             .FirstOrDefaultAsync(cancellationToken);
     }
@@ -55,15 +51,12 @@ internal sealed class GymRepository(ApplicationDbContext dbContext)
             .Select(g => new GymDto
             {
                 Id = g.Id,
-                Name = g.Name.Value,
-                Description = g.Description.Value,
-                Address = new AddressDto
-                {
-                    Street = g.Address.Street,
-                    City = g.Address.City,
-                    ZipCode = g.Address.ZipCode
-                },
-                Schedule = g.Schedule.Value
+                Name = g.Name,
+                Description = g.Description,
+                Street = g.Street,
+                City = g.City,
+                ZipCode = g.ZipCode,
+                Schedule = g.Schedule
             })
             .FirstOrDefaultAsync(cancellationToken);
     }
@@ -77,21 +70,18 @@ internal sealed class GymRepository(ApplicationDbContext dbContext)
     {
         return await dbContext
             .Set<Gym>()
-            .OrderBy(g => g.Name.Value)
+            .OrderBy(g => g.Name)
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)
             .Select(g => new GymDto
             {
                 Id = g.Id,
-                Name = g.Name.Value,
-                Description = g.Description.Value,
-                Address = new AddressDto
-                {
-                    Street = g.Address.Street,
-                    City = g.Address.City,
-                    ZipCode = g.Address.ZipCode
-                },
-                Schedule = g.Schedule.Value
+                Name = g.Name,
+                Description = g.Description,
+                Street = g.Street,
+                City = g.City,
+                ZipCode = g.ZipCode,
+                Schedule = g.Schedule
             }).ToListAsync(cancellationToken);
     }
 
@@ -103,15 +93,12 @@ internal sealed class GymRepository(ApplicationDbContext dbContext)
             .Select(g => new GymDto
             {
                 Id = g.Id,
-                Name = g.Name.Value,
-                Description = g.Description.Value,
-                Address = new AddressDto
-                {
-                    Street = g.Address.Street,
-                    City = g.Address.City,
-                    ZipCode = g.Address.ZipCode
-                },
-                Schedule = g.Schedule.Value
+                Name = g.Name,
+                Description = g.Description,
+                Street = g.Street,
+                City = g.City,
+                ZipCode = g.ZipCode,
+                Schedule = g.Schedule
             })
             .FirstOrDefaultAsync(cancellationToken);
     }

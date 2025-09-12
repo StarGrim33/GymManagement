@@ -1,5 +1,4 @@
 ﻿using System.Linq.Expressions;
-using GymManagement.Domain.Entities;
 using GymManagement.Domain.Entities.Gyms;
 using GymManagement.Domain.Entities.Gyms.QueryOptions;
 using GymManagement.Infrastructure.Repositories.CacheKeys;
@@ -73,12 +72,9 @@ public class CachedGymRepository(IGymRepository gymRepository, HybridCache hybri
                 Id = g.Id,
                 Name = g.Name,
                 Description = g.Description,
-                Address = new AddressDto
-                {
-                    Street = g.Address.Street,
-                    City = g.Address.City,
-                    ZipCode = g.Address.ZipCode
-                },
+                Street = g.Street,
+                City = g.City,
+                ZipCode = g.ZipCode,
                 Schedule = g.Schedule
             }).ToList();
         }, cancellationToken: cancellationToken);
@@ -107,7 +103,7 @@ public class CachedGymRepository(IGymRepository gymRepository, HybridCache hybri
     private async Task InvalidateCache(Gym gym)
     {
         await hybridCache.RemoveAsync(CachedKeys.GymById(gym.Id));
-        await hybridCache.RemoveAsync(CachedKeys.GymByName(gym.Name.Value));
+        await hybridCache.RemoveAsync(CachedKeys.GymByName(gym.Name));
         await hybridCache.RemoveAsync(CachedKeys.GymsTotalCount);
     }
 }

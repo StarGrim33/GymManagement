@@ -2,10 +2,12 @@
 using Dapper;
 using GymManagement.Application.Abstractions.Data;
 using GymManagement.Domain.Abstractions;
-using MediatR;
+using GymManagement.Domain.Entities.Users.Events;
+using MassTransit;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Quartz;
 
 namespace GymManagement.Infrastructure.Outbox;
@@ -13,7 +15,7 @@ namespace GymManagement.Infrastructure.Outbox;
 [DisallowConcurrentExecution]
 internal sealed class ProcessOutboxMessages(
     ISqlConnectionFactory connectionFactory,
-    IPublisher publisher,
+    IBus bus,
     IOptions<OutboxOptions> outboxOptions,
     ILogger<ProcessOutboxMessages> logger)
     : IJob
@@ -40,12 +42,28 @@ internal sealed class ProcessOutboxMessages(
 
             try
             {
-                var domainEvent = JsonConvert
-                    .DeserializeObject<IDomainEvent>(
-                        outboxMessage.Content,
-                        JsonSerializerSettings)!;
+                var jsonObject = JObject.Parse(outboxMessage.Content);
+                var typeName = jsonObject["$type"]?.ToString();
 
-                await publisher.Publish(domainEvent, context.CancellationToken);
+                if (string.IsNullOrEmpty(typeName))
+                {
+                    logger.LogWarning("Missing $type in outbox message {MessageId}", outboxMessage.Id);
+                    return;
+                }
+
+                var eventType = Type.GetType(typeName);
+
+                if (eventType is null)
+                {
+                    logger.LogWarning("Unknown event type in outbox message {MessageId}", outboxMessage.Id);
+                    return;
+                }
+
+                var domainEvent = JsonConvert.DeserializeObject(outboxMessage.Content, eventType, JsonSerializerSettings)!;
+
+                await bus.Publish(domainEvent, context.CancellationToken);
+
+                logger.LogInformation("Processed new event {EventType}", eventType.Name);
             }
             catch (Exception ex)
             {
@@ -53,6 +71,8 @@ internal sealed class ProcessOutboxMessages(
                     outboxMessage.Id);
 
                 exception = ex;
+
+                transaction.Rollback();
             }
 
             await MarkOutboxMessageAsProcessedAsync(connection, transaction, outboxMessage, exception);

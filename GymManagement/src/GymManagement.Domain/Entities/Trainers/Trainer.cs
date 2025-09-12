@@ -1,12 +1,11 @@
 ﻿using GymManagement.Domain.Abstractions;
 using GymManagement.Domain.Entities.Gyms;
-using GymManagement.Domain.Entities.Users;
 
 namespace GymManagement.Domain.Entities.Trainers;
 
 public sealed class Trainer : Entity
 {
-    private Trainer(Guid id, FirstName firstName, LastName lastName, Email email) : base(id)
+    private Trainer(Guid id, string firstName, string lastName, string email) : base(id)
     {
         FirstName = firstName;
         LastName = lastName;
@@ -17,23 +16,15 @@ public sealed class Trainer : Entity
     {
     }
 
-    public FirstName FirstName { get; private set; }
+    public string FirstName { get; private set; } = string.Empty;
 
-    public LastName LastName { get; private set; }
+    public string LastName { get; private set; } = string.Empty;
 
-    public Email Email { get; private set; }
+    public string Email { get; private set; } = string.Empty;
 
-    public string PhoneNumber { get; private set; } = string.Empty;
+    public bool IsActive { get; private set; } = true;
 
-    public string Specialization { get; private set; } = string.Empty;
-
-    public string Bio { get; private set; } = string.Empty;
-
-    public bool IsActive { get; private set; }
-
-    public Gym Gym { get; private set; }
+    public Gym Gym { get; private set; } = null!;
 
     public Guid GymId { get; private set; }
-
-    public List<TrainingSession> TrainingSessions { get; private set; } = [];
 }

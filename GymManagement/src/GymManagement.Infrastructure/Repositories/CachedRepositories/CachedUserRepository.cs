@@ -79,7 +79,7 @@ public class CachedUserRepository(IUserRepository userRepository, HybridCache hy
     private async Task InvalidateCache(User user)
     {
         await hybridCache.RemoveAsync(CachedKeys.UserById(user.Id));
-        await hybridCache.RemoveAsync(CachedKeys.UserByEmail(user.Email.Value));
+        await hybridCache.RemoveAsync(CachedKeys.UserByEmail(user.Email));
         await hybridCache.RemoveAsync(CachedKeys.UsersTotalCount);
     }
 }

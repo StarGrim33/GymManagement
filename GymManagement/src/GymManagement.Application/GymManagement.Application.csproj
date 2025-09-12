@@ -16,7 +16,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Abstractions\Email\" />
-    <Folder Include="Abstractions\Data\" />
     <Folder Include="Gyms\Update\" />
     <Folder Include="Invoice\" />
   </ItemGroup>

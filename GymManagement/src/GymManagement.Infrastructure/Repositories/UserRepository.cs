@@ -1,4 +1,5 @@
-﻿using GymManagement.Domain.Entities.Users;
+﻿using GymManagement.Domain.Entities.Trainers;
+using GymManagement.Domain.Entities.Users;
 using Microsoft.EntityFrameworkCore;
 
 namespace GymManagement.Infrastructure.Repositories;
@@ -11,7 +12,7 @@ internal sealed class UserRepository(ApplicationDbContext dbContext) : Repositor
             .Set<User>()
             .AsSplitQuery()
             .Include(u => u.Memberships)
-            .Include( u => u.TrainingSessions)
+            .Include(u => u.TrainingSessions)
             .FirstOrDefaultAsync(u => u.Id == id, cancellationToken);
     }
 
@@ -19,7 +20,7 @@ internal sealed class UserRepository(ApplicationDbContext dbContext) : Repositor
     {
         return await dbContext
             .Set<User>()
-            .FirstOrDefaultAsync(u => u.Email == new Domain.Entities.Email(email), cancellationToken);
+            .FirstOrDefaultAsync(u => u.Email == email, cancellationToken);
     }
 
     public async Task<int> GetTotalCountAsync(CancellationToken cancellationToken = default)

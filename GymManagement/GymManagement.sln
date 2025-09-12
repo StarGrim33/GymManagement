@@ -17,6 +17,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GymManagement.Api", "src\Gy
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{4F85DB7C-5673-4E02-843C-CB246F148988}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GymManagement.NotificationService.Api", "src\GymManagement.NotificationService.Api\GymManagement.NotificationService.Api.csproj", "{9840F89E-A554-408C-BC49-0312A0F6045C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GymManagement.Domain.UnitTests", "..\GymManagement.Domain.UnitTests\GymManagement.Domain.UnitTests.csproj", "{FFFE4DC2-BF7C-463B-8871-689A59ADE1A1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,6 +47,14 @@ Global
 		{4F85DB7C-5673-4E02-843C-CB246F148988}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4F85DB7C-5673-4E02-843C-CB246F148988}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4F85DB7C-5673-4E02-843C-CB246F148988}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9840F89E-A554-408C-BC49-0312A0F6045C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9840F89E-A554-408C-BC49-0312A0F6045C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9840F89E-A554-408C-BC49-0312A0F6045C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9840F89E-A554-408C-BC49-0312A0F6045C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FFFE4DC2-BF7C-463B-8871-689A59ADE1A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FFFE4DC2-BF7C-463B-8871-689A59ADE1A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FFFE4DC2-BF7C-463B-8871-689A59ADE1A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FFFE4DC2-BF7C-463B-8871-689A59ADE1A1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -52,6 +64,8 @@ Global
 		{CC2D90C8-65EA-4B6B-B8E8-9972A4C41ABF} = {9F90F292-B4D1-4810-9475-2A1AD23AB771}
 		{6BD4A378-416F-4F86-8A1A-3436133E25E4} = {9F90F292-B4D1-4810-9475-2A1AD23AB771}
 		{7FA1ED8E-4544-4E1D-B50F-6A837631B0A9} = {9F90F292-B4D1-4810-9475-2A1AD23AB771}
+		{9840F89E-A554-408C-BC49-0312A0F6045C} = {9F90F292-B4D1-4810-9475-2A1AD23AB771}
+		{FFFE4DC2-BF7C-463B-8871-689A59ADE1A1} = {A34A9CA3-0181-4035-A1B4-9A0315AE8B89}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6D033E89-6197-441D-ADBB-ABC4D437C2C4}

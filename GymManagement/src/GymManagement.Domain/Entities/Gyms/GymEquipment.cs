@@ -13,15 +13,10 @@ public sealed class GymEquipment : Entity
     {
     }
 
-    public Name Name { get; private set; }
-
-    public Description Description { get; private set; }
-
+    public string Name { get; private set; } = string.Empty;
+    public string Description { get; private set; } = string.Empty;
     public EquipmentType EquipmentType { get; private set; }
-
     public bool IsAvailable { get; private set; }
-
-    public Gym Gym { get; private set; }
-
+    public Gym Gym { get; private set; } = null!;
     public Guid GymId { get; private set; }
 }

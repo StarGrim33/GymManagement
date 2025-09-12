@@ -1,4 +1,4 @@
-services:
+﻿services:
   gymmanagement.api:
     image: ${DOCKER_REGISTRY-}gymmanagementapi
     container_name: Gym-Management-API
@@ -7,6 +7,7 @@ services:
       dockerfile: src/GymManagement.Api/Dockerfile
     depends_on:
       - gym-management-db
+      - rabbitmq
 
   gym-management-db:
     image: postgres:latest
@@ -49,3 +50,26 @@ services:
     restart: always
     ports:
       - '6379:6379'
+ 
+  rabbitmq:
+    image: rabbitmq:4.1.0-beta.5-management-alpine
+    container_name: Gym-Management-RabbitMQ
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    ports:
+     - "5672:5672"
+     - "15672:15672"
+    volumes:
+      - ./rabbitmq-data:/var/lib/rabbitmq
+
+  gymmanagement.notificationservice.api:
+    image: ${DOCKER_REGISTRY-}gymmanagementnotificationserviceapi
+    container_name: Gym-Management-NotificationService-API
+    build:
+      context: .
+      dockerfile: src/GymManagement.NotificationService.Api/Dockerfile
+    depends_on:
+      - rabbitmq
+    ports:
+      - "5003:80" # Порт для доступа к Notification Service

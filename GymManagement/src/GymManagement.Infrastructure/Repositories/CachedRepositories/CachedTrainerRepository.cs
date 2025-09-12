@@ -9,7 +9,7 @@ public class CachedTrainerRepository(ITrainerRepository trainerRepository, Hybri
     private async Task InvalidateCache(Trainer trainer)
     {
         await hybridCache.RemoveAsync(CachedKeys.TrainerById(trainer.Id));
-        await hybridCache.RemoveAsync(CachedKeys.TrainerByName(trainer.FirstName.Value));
+        await hybridCache.RemoveAsync(CachedKeys.TrainerByName(trainer.FirstName));
     }
 
     public async Task<Trainer?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
